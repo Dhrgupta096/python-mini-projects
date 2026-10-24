@@ -7,6 +7,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day | Project | Path | Status |
 | :--- | :--- | :--- | :--- |
 | Day 01 | Tic-Tac-Toe | [`day01_tic_tac_toe/tic_tac_toe.py`](day01_tic_tac_toe/tic_tac_toe.py) | ✅ Completed |
+| Day 02 | Sudoku Solver | [`day02_sudoku/sudoku.py`](day02_sudoku/sudoku.py) | ✅ Completed |
 
 ## Upcoming Queue
 - **Day 02**: Sudoku Solver & Generator (`day02_sudoku/sudoku.py`)
