@@ -1,0 +1,33 @@
+name: Daily Python Mini Project
+
+on:
+  schedule:
+    # 15:30 UTC = 9:00 PM IST (Asia/Kolkata) every day
+    - cron: "30 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-next-day:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate and verify next daily Python mini-project
+        run: python3 generate_next_day.py
+
+      - name: Commit and push new project
+        run: |
+          git config user.name "Dhrgupta096"
+          git config user.email "dhr.gupta096@gmail.com"
+          git add .
+          git commit -m "Add next daily Python mini-project"
+          git push origin main
