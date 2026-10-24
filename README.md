@@ -1,0 +1,17 @@
+# Python Mini Projects 🐍
+
+A daily collection of clean, standard-library Python mini-projects and classic games.
+
+## Progress Log
+
+| Day | Project | Path | Status |
+| :--- | :--- | :--- | :--- |
+| Day 01 | Tic-Tac-Toe | [`day01_tic_tac_toe/tic_tac_toe.py`](day01_tic_tac_toe/tic_tac_toe.py) | ✅ Completed |
+
+## Upcoming Queue
+- **Day 02**: Sudoku Solver & Generator (`day02_sudoku/sudoku.py`)
+- **Day 03**: 2048 Terminal Game (`day03_2048/game_2048.py`)
+- **Day 04**: Hangman (`day04_hangman/hangman.py`)
+- **Day 05**: Minesweeper CLI (`day05_minesweeper/minesweeper.py`)
+- **Day 06**: Connect Four (`day06_connect_four/connect_four.py`)
+- **Day 07**: Wordle CLI (`day07_wordle/wordle.py`)
