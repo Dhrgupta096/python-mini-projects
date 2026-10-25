@@ -320,8 +320,11 @@ def update_readme(day_num: int, title: str, rel_path: str) -> None:
     readme = ROOT / "README.md"
     content = readme.read_text(encoding="utf-8")
     row = f"| Day {day_num:02d} | {title} | [`{rel_path}`]({rel_path}) | ✅ Completed |"
+    lines = [
+        line for line in content.splitlines()
+        if not line.startswith(f"- **Day {day_num:02d}**:")
+    ]
     if row not in content:
-        lines = content.splitlines()
         insert_at = next(
             (i for i, line in enumerate(lines) if line.startswith("## Upcoming Queue")),
             len(lines),
@@ -329,11 +332,11 @@ def update_readme(day_num: int, title: str, rel_path: str) -> None:
         while insert_at > 0 and lines[insert_at - 1].strip() == "":
             insert_at -= 1
         lines.insert(insert_at, row)
-        readme.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    readme.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def self_check() -> None:
-    assert existing_days() == [1]
+    assert 1 in existing_days()
     for slug, title, code in PROJECTS:
         assert "def self_check" in code, f"{slug} missing self_check"
     print("Generator self-check passed.")
