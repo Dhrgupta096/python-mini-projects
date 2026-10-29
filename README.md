@@ -12,6 +12,6 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 04 | Hangman Word Game | [`day04_hangman/hangman.py`](day04_hangman/hangman.py) | ✅ Completed |
 | Day 05 | Minesweeper Grid | [`day05_minesweeper/minesweeper.py`](day05_minesweeper/minesweeper.py) | ✅ Completed |
 | Day 06 | Connect Four | [`day06_connect_four/connect_four.py`](day06_connect_four/connect_four.py) | ✅ Completed |
+| Day 07 | Wordle Feedback Scorer | [`day07_wordle/wordle.py`](day07_wordle/wordle.py) | ✅ Completed |
 
 ## Upcoming Queue
-- **Day 07**: Wordle CLI (`day07_wordle/wordle.py`)
