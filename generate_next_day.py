@@ -243,7 +243,7 @@ def score_guess(secret: str, guess: str) -> str:
 
 def self_check() -> None:
     assert score_guess("crane", "crane") == "GGGGG"
-    assert score_guess("apple", "puppy") == ".Y.G."
+    assert score_guess("apple", "puppy") == "Y.G.."
     assert score_guess("abbey", "babes") == "YYGG."
     print("Self-check passed.")
 
