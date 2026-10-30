@@ -15,6 +15,6 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 07 | Wordle Feedback Scorer | [`day07_wordle/wordle.py`](day07_wordle/wordle.py) | ✅ Completed |
 | Day 08 | Python Algorithm Challenge #08 | [`day08_challenge_08/challenge_08.py`](day08_challenge_08/challenge_08.py) | ✅ Completed |
 | Day 09 | Python Algorithm Challenge #09 | [`day09_challenge_09/challenge_09.py`](day09_challenge_09/challenge_09.py) | ✅ Completed |
+| Day 10 | Python Algorithm Challenge #10 | [`day10_challenge_10/challenge_10.py`](day10_challenge_10/challenge_10.py) | ✅ Completed |
 
 ## Upcoming Queue
-- **Day 10**: Python Algorithm Challenge #10 (`day10_challenge_10/challenge_10.py`)
