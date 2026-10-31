@@ -17,5 +17,6 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 09 | Python Algorithm Challenge #09 | [`day09_challenge_09/challenge_09.py`](day09_challenge_09/challenge_09.py) | ✅ Completed |
 | Day 10 | Python Algorithm Challenge #10 | [`day10_challenge_10/challenge_10.py`](day10_challenge_10/challenge_10.py) | ✅ Completed |
 | Day 11 | Python Algorithm Challenge #11 | [`day11_challenge_11/challenge_11.py`](day11_challenge_11/challenge_11.py) | ✅ Completed |
+| Day 12 | Python Algorithm Challenge #12 | [`day12_challenge_12/challenge_12.py`](day12_challenge_12/challenge_12.py) | ✅ Completed |
 
 ## Upcoming Queue
