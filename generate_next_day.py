@@ -252,6 +252,784 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_08",
+        "Python Algorithm Challenge #08",
+        '''#!/usr/bin/env python3
+"""Day 08: Python Algorithm Challenge #08 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 8."""
+    primes: list[int] = []
+    candidate = max(2, 8)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_09",
+        "Python Algorithm Challenge #09",
+        '''#!/usr/bin/env python3
+"""Day 09: Python Algorithm Challenge #09 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 9."""
+    primes: list[int] = []
+    candidate = max(2, 9)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_10",
+        "Python Algorithm Challenge #10",
+        '''#!/usr/bin/env python3
+"""Day 10: Python Algorithm Challenge #10 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 10."""
+    primes: list[int] = []
+    candidate = max(2, 10)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_11",
+        "Python Algorithm Challenge #11",
+        '''#!/usr/bin/env python3
+"""Day 11: Python Algorithm Challenge #11 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 11."""
+    primes: list[int] = []
+    candidate = max(2, 11)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_12",
+        "Python Algorithm Challenge #12",
+        '''#!/usr/bin/env python3
+"""Day 12: Python Algorithm Challenge #12 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 12."""
+    primes: list[int] = []
+    candidate = max(2, 12)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "game_of_life",
+        "Conway's Game of Life",
+        '''#!/usr/bin/env python3
+"""Conway's Game of Life grid simulation and oscillator self-check."""
+from __future__ import annotations
+
+Grid = list[list[int]]
+
+
+def count_neighbors(grid: Grid, r: int, c: int) -> int:
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+    for dr in (-1, 0, 1):
+        for dc in (-1, 0, 1):
+            if dr == 0 and dc == 0:
+                continue
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols:
+                count += grid[nr][nc]
+    return count
+
+
+def step(grid: Grid) -> Grid:
+    rows, cols = len(grid), len(grid[0])
+    new_grid = [[0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            alive = grid[r][c]
+            n = count_neighbors(grid, r, c)
+            if alive and n in (2, 3):
+                new_grid[r][c] = 1
+            elif not alive and n == 3:
+                new_grid[r][c] = 1
+    return new_grid
+
+
+def self_check() -> None:
+    blinker = [
+        [0, 1, 0],
+        [0, 1, 0],
+        [0, 1, 0],
+    ]
+    next_gen = step(blinker)
+    assert next_gen == [
+        [0, 0, 0],
+        [1, 1, 1],
+        [0, 0, 0],
+    ]
+    assert step(next_gen) == blinker
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "calculator",
+        "Math Expression Evaluator",
+        '''#!/usr/bin/env python3
+"""Recursive descent evaluator for arithmetic expressions (+, -, *, /, parentheses)."""
+from __future__ import annotations
+import re
+
+
+def tokenize(expr: str) -> list[str]:
+    return re.findall(r"\\d+(?:\\.\\d+)?|[+\\-*/()]", expr)
+
+
+def evaluate(expr: str) -> float:
+    tokens = tokenize(expr)
+    pos = 0
+
+    def parse_factor() -> float:
+        nonlocal pos
+        token = tokens[pos]
+        if token == "(":
+            pos += 1
+            val = parse_expr()
+            assert tokens[pos] == ")"
+            pos += 1
+            return val
+        pos += 1
+        return float(token)
+
+    def parse_term() -> float:
+        nonlocal pos
+        val = parse_factor()
+        while pos < len(tokens) and tokens[pos] in ("*", "/"):
+            op = tokens[pos]
+            pos += 1
+            rhs = parse_factor()
+            val = (val * rhs) if op == "*" else (val / rhs)
+        return val
+
+    def parse_expr() -> float:
+        nonlocal pos
+        val = parse_term()
+        while pos < len(tokens) and tokens[pos] in ("+", "-"):
+            op = tokens[pos]
+            pos += 1
+            rhs = parse_term()
+            val = (val + rhs) if op == "+" else (val - rhs)
+        return val
+
+    res = parse_expr()
+    assert pos == len(tokens)
+    return res
+
+
+def self_check() -> None:
+    assert evaluate("3 + 5 * 2") == 13.0
+    assert evaluate("(3 + 5) * 2") == 16.0
+    assert evaluate("10 / 2 - 3") == 2.0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "snake_engine",
+        "Snake Game Engine",
+        '''#!/usr/bin/env python3
+"""Deterministic 2D Snake game mechanics and collision engine."""
+from __future__ import annotations
+from typing import NamedTuple
+
+
+class Point(NamedTuple):
+    x: int
+    y: int
+
+
+class SnakeGame:
+    def __init__(self, width: int = 10, height: int = 10):
+        self.width = width
+        self.height = height
+        self.snake = [Point(5, 5), Point(4, 5), Point(3, 5)]
+        self.direction = Point(1, 0)
+        self.food = Point(7, 5)
+        self.game_over = False
+
+    def change_direction(self, dx: int, dy: int) -> None:
+        if (self.direction.x + dx, self.direction.y + dy) != (0, 0):
+            self.direction = Point(dx, dy)
+
+    def step(self) -> bool:
+        if self.game_over:
+            return False
+        head = self.snake[0]
+        new_head = Point(head.x + self.direction.x, head.y + self.direction.y)
+
+        if not (0 <= new_head.x < self.width and 0 <= new_head.y < self.height):
+            self.game_over = True
+            return False
+        if new_head in self.snake[:-1]:
+            self.game_over = True
+            return False
+
+        self.snake.insert(0, new_head)
+        if new_head == self.food:
+            self.food = Point((self.food.x + 3) % self.width, (self.food.y + 2) % self.height)
+        else:
+            self.snake.pop()
+        return True
+
+
+def self_check() -> None:
+    game = SnakeGame(10, 10)
+    assert len(game.snake) == 3
+    game.step()
+    assert game.snake[0] == Point(6, 5)
+    game.step()
+    assert game.snake[0] == Point(7, 5)
+    assert len(game.snake) == 4
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "lru_cache",
+        "LRU Cache",
+        '''#!/usr/bin/env python3
+"""Doubly-linked hash map Least Recently Used (LRU) Cache implementation."""
+from __future__ import annotations
+from typing import Any
+
+
+class Node:
+    def __init__(self, key: Any = None, value: Any = None):
+        self.key = key
+        self.value = value
+        self.prev: Node | None = None
+        self.next: Node | None = None
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache: dict[Any, Node] = {}
+        self.head = Node()
+        self.tail = Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _remove(self, node: Node) -> None:
+        p, n = node.prev, node.next
+        if p and n:
+            p.next = n
+            n.prev = p
+
+    def _add_to_front(self, node: Node) -> None:
+        node.next = self.head.next
+        node.prev = self.head
+        if self.head.next:
+            self.head.next.prev = node
+        self.head.next = node
+
+    def get(self, key: Any) -> Any:
+        if key not in self.cache:
+            return None
+        node = self.cache[key]
+        self._remove(node)
+        self._add_to_front(node)
+        return node.value
+
+    def put(self, key: Any, value: Any) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            self._remove(node)
+            self._add_to_front(node)
+            return
+
+        if len(self.cache) >= self.capacity:
+            lru = self.tail.prev
+            if lru and lru.key is not None:
+                self._remove(lru)
+                del self.cache[lru.key]
+
+        new_node = Node(key, value)
+        self.cache[key] = new_node
+        self._add_to_front(new_node)
+
+
+def self_check() -> None:
+    cache = LRUCache(2)
+    cache.put("a", 1)
+    cache.put("b", 2)
+    assert cache.get("a") == 1
+    cache.put("c", 3)
+    assert cache.get("b") is None
+    assert cache.get("c") == 3
+    assert cache.get("a") == 1
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "markdown_parser",
+        "Markdown to HTML Parser",
+        '''#!/usr/bin/env python3
+"""Mini Markdown to HTML parser supporting headings, bold, italic, and lists."""
+from __future__ import annotations
+import re
+
+
+def parse_inline(text: str) -> str:
+    text = re.sub(r"`([^`]+)`", r"<code>\\1</code>", text)
+    text = re.sub(r"\\*\\*([^*]+)\\*\\*", r"<strong>\\1</strong>", text)
+    text = re.sub(r"\\*([^*]+)\\*", r"<em>\\1</em>", text)
+    text = re.sub(r"\\[([^\\]]+)\\]\\(([^)]+)\\)", r\'<a href="\\2">\\1</a>\', text)
+    return text
+
+
+def markdown_to_html(md: str) -> str:
+    html_lines: list[str] = []
+    in_list = False
+
+    for raw_line in md.strip().splitlines():
+        line = raw_line.strip()
+        if not line:
+            if in_list:
+                html_lines.append("</ul>")
+                in_list = False
+            continue
+
+        if line.startswith("#"):
+            if in_list:
+                html_lines.append("</ul>")
+                in_list = False
+            level = len(line) - len(line.lstrip("#"))
+            heading_text = parse_inline(line.lstrip("#").strip())
+            html_lines.append(f"<h{level}>{heading_text}</h{level}>")
+        elif line.startswith("- "):
+            if not in_list:
+                html_lines.append("<ul>")
+                in_list = True
+            item_text = parse_inline(line[2:].strip())
+            html_lines.append(f"  <li>{item_text}</li>")
+        else:
+            if in_list:
+                html_lines.append("</ul>")
+                in_list = False
+            html_lines.append(f"<p>{parse_inline(line)}</p>")
+
+    if in_list:
+        html_lines.append("</ul>")
+    return "\\n".join(html_lines)
+
+
+def self_check() -> None:
+    md = "# Hello\\n**bold** and *italic*\\n- item 1\\n- item 2"
+    html = markdown_to_html(md)
+    assert "<h1>Hello</h1>" in html
+    assert "<strong>bold</strong> and <em>italic</em>" in html
+    assert "<ul>\\n  <li>item 1</li>\\n  <li>item 2</li>\\n</ul>" in html
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "url_shortener",
+        "Base62 URL Shortener",
+        '''#!/usr/bin/env python3
+"""URL Shortener service with Base62 encoding and decoding."""
+from __future__ import annotations
+
+ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+BASE = len(ALPHABET)
+
+
+def encode_base62(num: int) -> str:
+    if num == 0:
+        return ALPHABET[0]
+    chars = []
+    while num > 0:
+        chars.append(ALPHABET[num % BASE])
+        num //= BASE
+    return "".join(reversed(chars))
+
+
+def decode_base62(s: str) -> int:
+    num = 0
+    for char in s:
+        num = num * BASE + ALPHABET.index(char)
+    return num
+
+
+class URLShortener:
+    def __init__(self, prefix: str = "https://short.io/"):
+        self.prefix = prefix
+        self.url_to_id: dict[str, int] = {}
+        self.id_to_url: dict[int, str] = {}
+        self.counter = 1000
+
+    def shorten(self, url: str) -> str:
+        if url in self.url_to_id:
+            code = encode_base62(self.url_to_id[url])
+            return self.prefix + code
+        self.counter += 1
+        self.url_to_id[url] = self.counter
+        self.id_to_url[self.counter] = url
+        return self.prefix + encode_base62(self.counter)
+
+    def restore(self, short_url: str) -> str | None:
+        code = short_url[len(self.prefix):]
+        idx = decode_base62(code)
+        return self.id_to_url.get(idx)
+
+
+def self_check() -> None:
+    service = URLShortener()
+    short = service.shorten("https://docs.python.org/3/")
+    assert short.startswith("https://short.io/")
+    assert service.restore(short) == "https://docs.python.org/3/"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "huffman_coding",
+        "Huffman Coding Compression",
+        '''#!/usr/bin/env python3
+"""Huffman coding lossless text compression and decompression."""
+from __future__ import annotations
+import heapq
+from collections import Counter
+
+
+class HuffmanNode:
+    def __init__(self, char: str | None, freq: int):
+        self.char = char
+        self.freq = freq
+        self.left: HuffmanNode | None = None
+        self.right: HuffmanNode | None = None
+
+    def __lt__(self, other: HuffmanNode) -> bool:
+        return self.freq < other.freq
+
+
+def build_tree(text: str) -> HuffmanNode | None:
+    if not text:
+        return None
+    counts = Counter(text)
+    heap = [HuffmanNode(char, freq) for char, freq in counts.items()]
+    heapq.heapify(heap)
+
+    while len(heap) > 1:
+        n1 = heapq.heappop(heap)
+        n2 = heapq.heappop(heap)
+        merged = HuffmanNode(None, n1.freq + n2.freq)
+        merged.left = n1
+        merged.right = n2
+        heapq.heappush(heap, merged)
+
+    return heap[0]
+
+
+def build_codes(node: HuffmanNode | None, prefix: str = "", codes: dict[str, str] | None = None) -> dict[str, str]:
+    if codes is None:
+        codes = {}
+    if node:
+        if node.char is not None:
+            codes[node.char] = prefix or "0"
+        build_codes(node.left, prefix + "0", codes)
+        build_codes(node.right, prefix + "1", codes)
+    return codes
+
+
+def compress(text: str) -> tuple[str, HuffmanNode | None]:
+    tree = build_tree(text)
+    codes = build_codes(tree)
+    encoded = "".join(codes[ch] for ch in text)
+    return encoded, tree
+
+
+def decompress(encoded: str, tree: HuffmanNode | None) -> str:
+    if not tree or not encoded:
+        return ""
+    if tree.left is None and tree.right is None:
+        return (tree.char or "") * len(encoded)
+    chars = []
+    curr = tree
+    for bit in encoded:
+        curr = curr.left if bit == "0" else curr.right
+        if curr and curr.char is not None:
+            chars.append(curr.char)
+            curr = tree
+    return "".join(chars)
+
+
+def self_check() -> None:
+    text = "abracadabra"
+    bits, tree = compress(text)
+    assert len(bits) < len(text) * 8
+    assert decompress(bits, tree) == text
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rate_limiter",
+        "Token Bucket Rate Limiter",
+        '''#!/usr/bin/env python3
+"""Token Bucket rate limiter for API requests."""
+from __future__ import annotations
+import time
+
+
+class TokenBucket:
+    def __init__(self, capacity: int, refill_rate_per_sec: float):
+        self.capacity = capacity
+        self.refill_rate = refill_rate_per_sec
+        self.tokens = float(capacity)
+        self.last_refill = time.monotonic()
+
+    def allow_request(self, tokens: int = 1, current_time: float | None = None) -> bool:
+        now = time.monotonic() if current_time is None else current_time
+        elapsed = now - self.last_refill
+        self.tokens = min(self.capacity, self.tokens + elapsed * self.refill_rate)
+        self.last_refill = now
+
+        if self.tokens >= tokens:
+            self.tokens -= tokens
+            return True
+        return False
+
+
+def self_check() -> None:
+    limiter = TokenBucket(capacity=3, refill_rate_per_sec=1.0)
+    assert limiter.allow_request(1, current_time=0.0)
+    assert limiter.allow_request(1, current_time=0.0)
+    assert limiter.allow_request(1, current_time=0.0)
+    assert not limiter.allow_request(1, current_time=0.0)
+    assert limiter.allow_request(1, current_time=1.0)
+    assert not limiter.allow_request(1, current_time=1.0)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "pathfinder_bfs",
+        "Maze BFS Pathfinder",
+        '''#!/usr/bin/env python3
+"""Breadth-First Search (BFS) grid shortest path finder."""
+from __future__ import annotations
+from collections import deque
+
+
+def find_shortest_path(grid: list[str], start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]] | None:
+    rows, cols = len(grid), len(grid[0])
+    queue = deque([(start, [start])])
+    visited = {start}
+
+    while queue:
+        (r, c), path = queue.popleft()
+        if (r, c) == end:
+            return path
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != "#" and (nr, nc) not in visited:
+                visited.add((nr, nc))
+                queue.append(((nr, nc), path + [(nr, nc)]))
+    return None
+
+
+def self_check() -> None:
+    maze = [
+        "S..#.",
+        "#..#.",
+        "...#.",
+        ".##..",
+        "....E",
+    ]
+    path = find_shortest_path(maze, (0, 0), (4, 4))
+    assert path is not None
+    assert path[0] == (0, 0) and path[-1] == (4, 4)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "trie_autocomplete",
+        "Trie Autocomplete",
+        '''#!/usr/bin/env python3
+"""Prefix tree (Trie) dictionary with fast autocompletion."""
+from __future__ import annotations
+
+
+class TrieNode:
+    def __init__(self):
+        self.children: dict[str, TrieNode] = {}
+        self.is_word = False
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        curr = self.root
+        for ch in word:
+            if ch not in curr.children:
+                curr.children[ch] = TrieNode()
+            curr = curr.children[ch]
+        curr.is_word = True
+
+    def autocomplete(self, prefix: str) -> list[str]:
+        curr = self.root
+        for ch in prefix:
+            if ch not in curr.children:
+                return []
+            curr = curr.children[ch]
+
+        results: list[str] = []
+
+        def dfs(node: TrieNode, path: list[str]) -> None:
+            if node.is_word:
+                results.append("".join(path))
+            for char, next_node in sorted(node.children.items()):
+                path.append(char)
+                dfs(next_node, path)
+                path.pop()
+
+        dfs(curr, list(prefix))
+        return results
+
+
+def self_check() -> None:
+    trie = Trie()
+    for w in ["python", "pyramid", "pytorch", "pyspark", "rust", "ruby"]:
+        trie.insert(w)
+    matches = trie.autocomplete("pyr")
+    assert matches == ["pyramid"]
+    py_matches = trie.autocomplete("py")
+    assert py_matches == ["pyramid", "pyspark", "python", "pytorch"]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 
