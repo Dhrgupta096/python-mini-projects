@@ -20,10 +20,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 12 | Python Algorithm Challenge #12 | [`day12_challenge_12/challenge_12.py`](day12_challenge_12/challenge_12.py) | ✅ Completed |
 | Day 13 | Conway's Game of Life | [`day13_game_of_life/game_of_life.py`](day13_game_of_life/game_of_life.py) | ✅ Completed |
 | Day 14 | Math Expression Evaluator | [`day14_calculator/calculator.py`](day14_calculator/calculator.py) | ✅ Completed |
+| Day 15 | Snake Game Engine | [`day15_snake_engine/snake_engine.py`](day15_snake_engine/snake_engine.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 15**: Snake Game Engine
 - **Day 16**: LRU Cache
 - **Day 17**: Markdown to HTML Parser
 - **Day 18**: Base62 URL Shortener
