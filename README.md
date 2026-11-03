@@ -22,10 +22,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 14 | Math Expression Evaluator | [`day14_calculator/calculator.py`](day14_calculator/calculator.py) | ✅ Completed |
 | Day 15 | Snake Game Engine | [`day15_snake_engine/snake_engine.py`](day15_snake_engine/snake_engine.py) | ✅ Completed |
 | Day 16 | LRU Cache | [`day16_lru_cache/lru_cache.py`](day16_lru_cache/lru_cache.py) | ✅ Completed |
+| Day 17 | Markdown to HTML Parser | [`day17_markdown_parser/markdown_parser.py`](day17_markdown_parser/markdown_parser.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 17**: Markdown to HTML Parser
 - **Day 18**: Base62 URL Shortener
 - **Day 19**: Huffman Coding Compression
 - **Day 20**: Token Bucket Rate Limiter
