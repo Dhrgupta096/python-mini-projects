@@ -24,10 +24,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 16 | LRU Cache | [`day16_lru_cache/lru_cache.py`](day16_lru_cache/lru_cache.py) | ✅ Completed |
 | Day 17 | Markdown to HTML Parser | [`day17_markdown_parser/markdown_parser.py`](day17_markdown_parser/markdown_parser.py) | ✅ Completed |
 | Day 18 | Base62 URL Shortener | [`day18_url_shortener/url_shortener.py`](day18_url_shortener/url_shortener.py) | ✅ Completed |
+| Day 19 | Huffman Coding Compression | [`day19_huffman_coding/huffman_coding.py`](day19_huffman_coding/huffman_coding.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 19**: Huffman Coding Compression
 - **Day 20**: Token Bucket Rate Limiter
 - **Day 21**: Maze BFS Pathfinder
 - **Day 22**: Trie Autocomplete
