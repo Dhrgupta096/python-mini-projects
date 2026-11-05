@@ -25,9 +25,9 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 17 | Markdown to HTML Parser | [`day17_markdown_parser/markdown_parser.py`](day17_markdown_parser/markdown_parser.py) | ✅ Completed |
 | Day 18 | Base62 URL Shortener | [`day18_url_shortener/url_shortener.py`](day18_url_shortener/url_shortener.py) | ✅ Completed |
 | Day 19 | Huffman Coding Compression | [`day19_huffman_coding/huffman_coding.py`](day19_huffman_coding/huffman_coding.py) | ✅ Completed |
+| Day 20 | Token Bucket Rate Limiter | [`day20_rate_limiter/rate_limiter.py`](day20_rate_limiter/rate_limiter.py) | ✅ Completed |
+| Day 21 | Maze BFS Pathfinder | [`day21_pathfinder_bfs/pathfinder_bfs.py`](day21_pathfinder_bfs/pathfinder_bfs.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 20**: Token Bucket Rate Limiter
-- **Day 21**: Maze BFS Pathfinder
 - **Day 22**: Trie Autocomplete
