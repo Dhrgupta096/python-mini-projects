@@ -28,6 +28,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 20 | Token Bucket Rate Limiter | [`day20_rate_limiter/rate_limiter.py`](day20_rate_limiter/rate_limiter.py) | ✅ Completed |
 | Day 21 | Maze BFS Pathfinder | [`day21_pathfinder_bfs/pathfinder_bfs.py`](day21_pathfinder_bfs/pathfinder_bfs.py) | ✅ Completed |
 | Day 22 | Trie Autocomplete | [`day22_trie_autocomplete/trie_autocomplete.py`](day22_trie_autocomplete/trie_autocomplete.py) | ✅ Completed |
+| Day 23 | Python Algorithm Challenge #23 | [`day23_challenge_23/challenge_23.py`](day23_challenge_23/challenge_23.py) | ✅ Completed |
 
 ## Upcoming Queue
 
