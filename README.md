@@ -29,6 +29,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 21 | Maze BFS Pathfinder | [`day21_pathfinder_bfs/pathfinder_bfs.py`](day21_pathfinder_bfs/pathfinder_bfs.py) | ✅ Completed |
 | Day 22 | Trie Autocomplete | [`day22_trie_autocomplete/trie_autocomplete.py`](day22_trie_autocomplete/trie_autocomplete.py) | ✅ Completed |
 | Day 23 | Python Algorithm Challenge #23 | [`day23_challenge_23/challenge_23.py`](day23_challenge_23/challenge_23.py) | ✅ Completed |
+| Day 24 | Python Algorithm Challenge #24 | [`day24_challenge_24/challenge_24.py`](day24_challenge_24/challenge_24.py) | ✅ Completed |
 
 ## Upcoming Queue
 
