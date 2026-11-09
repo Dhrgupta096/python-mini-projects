@@ -37,6 +37,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 29 | Python Algorithm Challenge #29 | [`day29_challenge_29/challenge_29.py`](day29_challenge_29/challenge_29.py) | ✅ Completed |
 | Day 30 | Python Algorithm Challenge #30 | [`day30_challenge_30/challenge_30.py`](day30_challenge_30/challenge_30.py) | ✅ Completed |
 | Day 31 | Python Algorithm Challenge #31 | [`day31_challenge_31/challenge_31.py`](day31_challenge_31/challenge_31.py) | ✅ Completed |
+| Day 32 | Python Algorithm Challenge #32 | [`day32_challenge_32/challenge_32.py`](day32_challenge_32/challenge_32.py) | ✅ Completed |
 
 ## Upcoming Queue
 
