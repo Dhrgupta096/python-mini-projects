@@ -49,10 +49,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 41 | Minimalist JSON Formatter | [`day41_json_serializer/json_serializer.py`](day41_json_serializer/json_serializer.py) | ✅ Completed |
 | Day 42 | Double-Entry Ledger System | [`day42_bank_ledger/bank_ledger.py`](day42_bank_ledger/bank_ledger.py) | ✅ Completed |
 | Day 43 | Min-Heap Task Scheduler | [`day43_priority_task_scheduler/priority_task_scheduler.py`](day43_priority_task_scheduler/priority_task_scheduler.py) | ✅ Completed |
+| Day 44 | 2D Spatial QuadTree | [`day44_quadtree/quadtree.py`](day44_quadtree/quadtree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 44**: 2D Spatial QuadTree
 - **Day 45**: Thompson NFA Regex Matcher
 - **Day 46**: Resilient Circuit Breaker
 - **Day 47**: Cryptographic Merkle Tree
