@@ -45,10 +45,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 37 | Text Diff Engine (LCS) | [`day37_diff_viewer/diff_viewer.py`](day37_diff_viewer/diff_viewer.py) | ✅ Completed |
 | Day 38 | Probabilistic Bloom Filter | [`day38_bloom_filter/bloom_filter.py`](day38_bloom_filter/bloom_filter.py) | ✅ Completed |
 | Day 39 | Cron Expression Parser | [`day39_cron_parser/cron_parser.py`](day39_cron_parser/cron_parser.py) | ✅ Completed |
+| Day 40 | Pub-Sub Event Bus | [`day40_event_emitter/event_emitter.py`](day40_event_emitter/event_emitter.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 40**: Pub-Sub Event Bus
 - **Day 41**: Minimalist JSON Formatter
 - **Day 42**: Double-Entry Ledger System
 - **Day 43**: Min-Heap Task Scheduler
