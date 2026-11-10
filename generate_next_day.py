@@ -1065,6 +1065,841 @@ if __name__ == "__main__":
     return slug, title, code
 
 
+PAST_CHALLENGES: list[tuple[str, str, str]] = [
+    (f"challenge_{d:02d}", f"Python Algorithm Challenge #{d:02d}", fallback_project(d)[2])
+    for d in range(23, 37)
+]
+
+NEW_PROJECTS: list[tuple[str, str, str]] = [
+    (
+        "diff_viewer",
+        "Text Diff Engine (LCS)",
+        '''#!/usr/bin/env python3
+"""Line-by-line text difference engine using Longest Common Subsequence."""
+from __future__ import annotations
+
+
+def compute_lcs(a: list[str], b: list[str]) -> list[list[int]]:
+    m, n = len(a), len(b)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m):
+        for j in range(n):
+            if a[i] == b[j]:
+                dp[i + 1][j + 1] = dp[i][j] + 1
+            else:
+                dp[i + 1][j + 1] = max(dp[i + 1][j], dp[i][j + 1])
+    return dp
+
+
+def diff_lines(text1: str, text2: str) -> list[str]:
+    a = text1.splitlines()
+    b = text2.splitlines()
+    dp = compute_lcs(a, b)
+    i, j = len(a), len(b)
+    result: list[str] = []
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and a[i - 1] == b[j - 1]:
+            result.append(f"  {a[i - 1]}")
+            i -= 1
+            j -= 1
+        elif j > 0 and (i == 0 or dp[i][j - 1] >= dp[i - 1][j]):
+            result.append(f"+ {b[j - 1]}")
+            j -= 1
+        else:
+            result.append(f"- {a[i - 1]}")
+            i -= 1
+    return list(reversed(result))
+
+
+def self_check() -> None:
+    t1 = "alpha\\nbeta\\ngamma"
+    t2 = "alpha\\nbeta\\ndelta"
+    d = diff_lines(t1, t2)
+    assert "  alpha" in d
+    assert "  beta" in d
+    assert "- gamma" in d
+    assert "+ delta" in d
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "bloom_filter",
+        "Probabilistic Bloom Filter",
+        '''#!/usr/bin/env python3
+"""Probabilistic Bloom filter with polynomial hash functions."""
+from __future__ import annotations
+
+
+class BloomFilter:
+    def __init__(self, size: int = 1024, num_hashes: int = 3):
+        self.size = size
+        self.num_hashes = num_hashes
+        self.bits = [0] * size
+
+    def _hashes(self, item: str) -> list[int]:
+        hashes = []
+        for seed in range(self.num_hashes):
+            h = 0
+            for ch in item:
+                h = (h * (31 + seed) + ord(ch)) % self.size
+            hashes.append(h)
+        return hashes
+
+    def add(self, item: str) -> None:
+        for idx in self._hashes(item):
+            self.bits[idx] = 1
+
+    def might_contain(self, item: str) -> bool:
+        return all(self.bits[idx] == 1 for idx in self._hashes(item))
+
+
+def self_check() -> None:
+    bf = BloomFilter(size=512, num_hashes=3)
+    bf.add("apple")
+    bf.add("banana")
+    assert bf.might_contain("apple")
+    assert bf.might_contain("banana")
+    assert not bf.might_contain("grapefruit_xyz_not_added")
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "cron_parser",
+        "Cron Expression Parser",
+        '''#!/usr/bin/env python3
+"""Standard 5-part cron field parser and validator."""
+from __future__ import annotations
+
+
+def parse_field(field: str, min_val: int, max_val: int) -> set[int]:
+    result: set[int] = set()
+    for part in field.split(","):
+        if "/" in part:
+            sub, step_s = part.split("/", 1)
+            step = int(step_s)
+            start, end = (min_val, max_val) if sub == "*" else (
+                (int(sub.split("-")[0]), int(sub.split("-")[1])) if "-" in sub else (int(sub), max_val)
+            )
+            result.update(range(start, end + 1, step))
+        elif "-" in part:
+            start_s, end_s = part.split("-", 1)
+            result.update(range(int(start_s), int(end_s) + 1))
+        elif part == "*":
+            result.update(range(min_val, max_val + 1))
+        else:
+            result.add(int(part))
+    return result
+
+
+def matches_cron(cron_expr: str, minute: int, hour: int, dom: int, month: int, dow: int) -> bool:
+    fields = cron_expr.split()
+    if len(fields) != 5:
+        raise ValueError("Expected 5 fields in cron expression")
+    m_set = parse_field(fields[0], 0, 59)
+    h_set = parse_field(fields[1], 0, 23)
+    dom_set = parse_field(fields[2], 1, 31)
+    mon_set = parse_field(fields[3], 1, 12)
+    dow_set = parse_field(fields[4], 0, 6)
+    return minute in m_set and hour in h_set and dom in dom_set and month in mon_set and dow in dow_set
+
+
+def self_check() -> None:
+    assert matches_cron("*/15 9-17 * * 1-5", 30, 10, 15, 6, 2)
+    assert not matches_cron("*/15 9-17 * * 1-5", 7, 10, 15, 6, 2)
+    assert not matches_cron("*/15 9-17 * * 1-5", 0, 20, 15, 6, 2)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "event_emitter",
+        "Pub-Sub Event Bus",
+        '''#!/usr/bin/env python3
+"""Publish-Subscribe event emitter with once and typed callback support."""
+from __future__ import annotations
+from typing import Callable, Any
+
+
+class EventEmitter:
+    def __init__(self):
+        self._listeners: dict[str, list[Callable[..., Any]]] = {}
+
+    def on(self, event: str, callback: Callable[..., Any]) -> None:
+        self._listeners.setdefault(event, []).append(callback)
+
+    def once(self, event: str, callback: Callable[..., Any]) -> None:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            self.off(event, wrapper)
+            return callback(*args, **kwargs)
+        self.on(event, wrapper)
+
+    def off(self, event: str, callback: Callable[..., Any]) -> None:
+        if event in self._listeners and callback in self._listeners[event]:
+            self._listeners[event].remove(callback)
+
+    def emit(self, event: str, *args: Any, **kwargs: Any) -> list[Any]:
+        callbacks = list(self._listeners.get(event, []))
+        return [cb(*args, **kwargs) for cb in callbacks]
+
+
+def self_check() -> None:
+    bus = EventEmitter()
+    log: list[str] = []
+    bus.on("ping", lambda val: log.append(f"ping:{val}"))
+    bus.once("ping", lambda val: log.append("once"))
+    bus.emit("ping", 1)
+    bus.emit("ping", 2)
+    assert log == ["ping:1", "once", "ping:2"]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "json_serializer",
+        "Minimalist JSON Formatter",
+        '''#!/usr/bin/env python3
+"""Minimalist recursive JSON serializer and pretty-printer."""
+from __future__ import annotations
+from typing import Any
+
+
+def serialize_json(obj: Any, indent: int = 2, current_level: int = 0) -> str:
+    sp = " " * (indent * current_level)
+    sp_next = " " * (indent * (current_level + 1))
+    if obj is None:
+        return "null"
+    if isinstance(obj, bool):
+        return "true" if obj else "false"
+    if isinstance(obj, (int, float)):
+        return str(obj)
+    if isinstance(obj, str):
+        escaped = obj.replace('"', '\\\\"').replace('\\n', '\\\\n')
+        return f'"{escaped}"'
+    if isinstance(obj, list):
+        if not obj:
+            return "[]"
+        items = [f"{sp_next}{serialize_json(x, indent, current_level + 1)}" for x in obj]
+        return "[\\n" + ",\\n".join(items) + f"\\n{sp}]"
+    if isinstance(obj, dict):
+        if not obj:
+            return "{}"
+        items = [
+            f'{sp_next}"{k}": {serialize_json(v, indent, current_level + 1)}'
+            for k, v in obj.items()
+        ]
+        return "{\\n" + ",\\n".join(items) + f"\\n{sp}}}"
+    raise TypeError(f"Type {type(obj)} is not JSON serializable")
+
+
+def self_check() -> None:
+    data = {"status": "ok", "code": 200, "tags": ["py", "json"], "active": True}
+    res = serialize_json(data, indent=2)
+    assert '"status": "ok"' in res
+    assert '"code": 200' in res
+    assert '"active": true' in res
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "bank_ledger",
+        "Double-Entry Ledger System",
+        '''#!/usr/bin/env python3
+"""Double-entry accounting transaction ledger with zero-sum validation."""
+from __future__ import annotations
+
+
+class AccountLedger:
+    def __init__(self):
+        self.accounts: dict[str, int] = {}
+        self.journal: list[dict[str, int]] = []
+
+    def get_balance(self, account: str) -> int:
+        return self.accounts.get(account, 0)
+
+    def record_entry(self, entry: dict[str, int]) -> bool:
+        if sum(entry.values()) != 0:
+            raise ValueError("Accounting equation violated: debits and credits must sum to zero")
+        for acct, amount in entry.items():
+            if self.get_balance(acct) + amount < 0 and not acct.startswith("equity:"):
+                return False
+        for acct, amount in entry.items():
+            self.accounts[acct] = self.get_balance(acct) + amount
+        self.journal.append(entry)
+        return True
+
+
+def self_check() -> None:
+    ledger = AccountLedger()
+    assert ledger.record_entry({"assets:cash": 1000, "equity:capital": -1000})
+    assert ledger.record_entry({"assets:savings": 400, "assets:cash": -400})
+    assert not ledger.record_entry({"assets:savings": 700, "assets:cash": -700})
+    assert ledger.get_balance("assets:cash") == 600
+    assert ledger.get_balance("assets:savings") == 400
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "priority_task_scheduler",
+        "Min-Heap Task Scheduler",
+        '''#!/usr/bin/env python3
+"""Min-heap priority task queue and scheduler."""
+from __future__ import annotations
+import heapq
+from typing import NamedTuple
+
+
+class Task(NamedTuple):
+    priority: int
+    task_id: str
+    action_name: str
+
+
+class TaskScheduler:
+    def __init__(self):
+        self._heap: list[Task] = []
+        self._completed: list[str] = []
+
+    def add_task(self, task_id: str, priority: int, action_name: str) -> None:
+        heapq.heappush(self._heap, Task(priority, task_id, action_name))
+
+    def run_next(self) -> Task | None:
+        if not self._heap:
+            return None
+        task = heapq.heappop(self._heap)
+        self._completed.append(task.task_id)
+        return task
+
+    def is_empty(self) -> bool:
+        return len(self._heap) == 0
+
+
+def self_check() -> None:
+    scheduler = TaskScheduler()
+    scheduler.add_task("task_low", 10, "cleanup")
+    scheduler.add_task("task_high", 1, "send_alert")
+    scheduler.add_task("task_med", 5, "process_data")
+    order = []
+    while not scheduler.is_empty():
+        t = scheduler.run_next()
+        if t:
+            order.append(t.task_id)
+    assert order == ["task_high", "task_med", "task_low"]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "quadtree",
+        "2D Spatial QuadTree",
+        '''#!/usr/bin/env python3
+"""2D spatial partition QuadTree for bounding box region queries."""
+from __future__ import annotations
+from typing import NamedTuple
+
+
+class Point(NamedTuple):
+    x: float
+    y: float
+    data: str
+
+
+class Rect(NamedTuple):
+    x: float
+    y: float
+    w: float
+    h: float
+
+    def contains(self, p: Point) -> bool:
+        return self.x <= p.x <= self.x + self.w and self.y <= p.y <= self.y + self.h
+
+    def intersects(self, other: Rect) -> bool:
+        return not (
+            other.x > self.x + self.w
+            or other.x + other.w < self.x
+            or other.y > self.y + self.h
+            or other.y + other.h < self.y
+        )
+
+
+class QuadTree:
+    def __init__(self, boundary: Rect, capacity: int = 4):
+        self.boundary = boundary
+        self.capacity = capacity
+        self.points: list[Point] = []
+        self.divided = False
+        self.children: list[QuadTree] = []
+
+    def subdivide(self) -> None:
+        x, y, w, h = self.boundary.x, self.boundary.y, self.boundary.w / 2, self.boundary.h / 2
+        self.children = [
+            QuadTree(Rect(x, y, w, h), self.capacity),
+            QuadTree(Rect(x + w, y, w, h), self.capacity),
+            QuadTree(Rect(x, y + h, w, h), self.capacity),
+            QuadTree(Rect(x + w, y + h, w, h), self.capacity),
+        ]
+        self.divided = True
+
+    def insert(self, p: Point) -> bool:
+        if not self.boundary.contains(p):
+            return False
+        if len(self.points) < self.capacity and not self.divided:
+            self.points.append(p)
+            return True
+        if not self.divided:
+            self.subdivide()
+            old_pts = self.points
+            self.points = []
+            for pt in old_pts:
+                for c in self.children:
+                    if c.insert(pt):
+                        break
+        return any(c.insert(p) for c in self.children)
+
+    def query(self, range_rect: Rect) -> list[Point]:
+        found: list[Point] = []
+        if not self.boundary.intersects(range_rect):
+            return found
+        for p in self.points:
+            if range_rect.contains(p):
+                found.append(p)
+        if self.divided:
+            for c in self.children:
+                found.extend(c.query(range_rect))
+        return found
+
+
+def self_check() -> None:
+    qt = QuadTree(Rect(0, 0, 100, 100), capacity=2)
+    qt.insert(Point(10, 10, "A"))
+    qt.insert(Point(20, 20, "B"))
+    qt.insert(Point(80, 80, "C"))
+    matches = qt.query(Rect(0, 0, 30, 30))
+    names = {p.data for p in matches}
+    assert names == {"A", "B"}
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "regex_engine",
+        "Thompson NFA Regex Matcher",
+        '''#!/usr/bin/env python3
+"""Recursive pattern matcher supporting literals, wildcard '.', and Kleene star '*'."""
+from __future__ import annotations
+
+
+def is_match(text: str, pattern: str) -> bool:
+    if not pattern:
+        return not text
+    first_match = bool(text) and (pattern[0] == text[0] or pattern[0] == ".")
+    if len(pattern) >= 2 and pattern[1] == "*":
+        return is_match(text, pattern[2:]) or (first_match and is_match(text[1:], pattern))
+    return first_match and is_match(text[1:], pattern[1:])
+
+
+def self_check() -> None:
+    assert is_match("aa", "a*")
+    assert is_match("ab", ".*")
+    assert is_match("aab", "c*a*b")
+    assert not is_match("mississippi", "mis*is*p*.")
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "circuit_breaker",
+        "Resilient Circuit Breaker",
+        '''#!/usr/bin/env python3
+"""Fault-tolerant circuit breaker state machine (Closed, Open, Half-Open)."""
+from __future__ import annotations
+import time
+from typing import Callable, Any
+
+
+class CircuitBreakerOpenException(Exception):
+    pass
+
+
+class CircuitBreaker:
+    def __init__(self, failure_threshold: int = 3, recovery_time: float = 2.0):
+        self.failure_threshold = failure_threshold
+        self.recovery_time = recovery_time
+        self.state = "CLOSED"
+        self.failures = 0
+        self.last_failure_time = 0.0
+
+    def call(self, func: Callable[[], Any], now: float | None = None) -> Any:
+        current_time = time.monotonic() if now is None else now
+        if self.state == "OPEN":
+            if current_time - self.last_failure_time >= self.recovery_time:
+                self.state = "HALF_OPEN"
+            else:
+                raise CircuitBreakerOpenException("Circuit is open")
+
+        try:
+            result = func()
+            if self.state == "HALF_OPEN":
+                self.state = "CLOSED"
+                self.failures = 0
+            return result
+        except Exception:
+            self.failures += 1
+            self.last_failure_time = current_time
+            if self.failures >= self.failure_threshold or self.state == "HALF_OPEN":
+                self.state = "OPEN"
+            raise
+
+
+def self_check() -> None:
+    cb = CircuitBreaker(failure_threshold=2, recovery_time=5.0)
+    fail_call = lambda: (_ for _ in ()).throw(RuntimeError("Remote down"))
+    success_call = lambda: "ok"
+
+    try:
+        cb.call(fail_call, now=10.0)
+    except RuntimeError:
+        pass
+    assert cb.state == "CLOSED"
+
+    try:
+        cb.call(fail_call, now=10.5)
+    except RuntimeError:
+        pass
+    assert cb.state == "OPEN"
+
+    try:
+        cb.call(success_call, now=12.0)
+        assert False, "Should raise CircuitBreakerOpenException"
+    except CircuitBreakerOpenException:
+        pass
+
+    assert cb.call(success_call, now=16.0) == "ok"
+    assert cb.state == "CLOSED"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "merkle_tree",
+        "Cryptographic Merkle Tree",
+        '''#!/usr/bin/env python3
+"""Cryptographic Merkle Tree with leaf verification and SHA-256."""
+from __future__ import annotations
+import hashlib
+
+
+def sha256(data: str) -> str:
+    return hashlib.sha256(data.encode("utf-8")).hexdigest()
+
+
+class MerkleTree:
+    def __init__(self, data_blocks: list[str]):
+        self.leaves = [sha256(x) for x in data_blocks]
+        self.levels: list[list[str]] = [self.leaves]
+        self._build_tree()
+
+    def _build_tree(self) -> None:
+        curr = self.leaves
+        while len(curr) > 1:
+            next_level = []
+            for i in range(0, len(curr), 2):
+                left = curr[i]
+                right = curr[i + 1] if i + 1 < len(curr) else left
+                next_level.append(sha256(left + right))
+            self.levels.append(next_level)
+            curr = next_level
+
+    @property
+    def root(self) -> str:
+        return self.levels[-1][0] if self.levels and self.levels[-1] else ""
+
+
+def self_check() -> None:
+    tree1 = MerkleTree(["tx1", "tx2", "tx3", "tx4"])
+    tree2 = MerkleTree(["tx1", "tx2", "tx3", "tx4"])
+    assert tree1.root == tree2.root
+    tree_tampered = MerkleTree(["tx1", "tx2_tampered", "tx3", "tx4"])
+    assert tree1.root != tree_tampered.root
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "levenshtein_distance",
+        "String Fuzzy Matcher",
+        '''#!/usr/bin/env python3
+"""Levenshtein edit distance and fuzzy keyword suggestion ranker."""
+from __future__ import annotations
+
+
+def levenshtein(s1: str, s2: str) -> int:
+    m, n = len(s1), len(s2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            cost = 0 if s1[i - 1] == s2[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost
+            )
+    return dp[m][n]
+
+
+def find_closest(query: str, vocabulary: list[str]) -> str | None:
+    if not vocabulary:
+        return None
+    return min(vocabulary, key=lambda word: levenshtein(query, word))
+
+
+def self_check() -> None:
+    assert levenshtein("kitten", "sitting") == 3
+    vocab = ["python", "java", "javascript", "golang", "ruby"]
+    assert find_closest("pythn", vocab) == "python"
+    assert find_closest("rubi", vocab) == "ruby"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "consistent_hash",
+        "Consistent Hashing Ring",
+        '''#!/usr/bin/env python3
+"""Consistent hashing ring with virtual nodes for distributed load-balancing."""
+from __future__ import annotations
+import bisect
+import hashlib
+
+
+class ConsistentHashRing:
+    def __init__(self, vnodes: int = 10):
+        self.vnodes = vnodes
+        self.ring: list[int] = []
+        self.node_map: dict[int, str] = {}
+
+    def _hash(self, key: str) -> int:
+        return int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16)
+
+    def add_node(self, node: str) -> None:
+        for i in range(self.vnodes):
+            vkey = f"{node}#vn{i}"
+            h = self._hash(vkey)
+            bisect.insort(self.ring, h)
+            self.node_map[h] = node
+
+    def get_node(self, key: str) -> str | None:
+        if not self.ring:
+            return None
+        h = self._hash(key)
+        idx = bisect.bisect_right(self.ring, h)
+        if idx == len(self.ring):
+            idx = 0
+        return self.node_map[self.ring[idx]]
+
+
+def self_check() -> None:
+    ring = ConsistentHashRing(vnodes=5)
+    ring.add_node("nodeA")
+    ring.add_node("nodeB")
+    ring.add_node("nodeC")
+    target1 = ring.get_node("user_101")
+    target2 = ring.get_node("user_102")
+    assert target1 in {"nodeA", "nodeB", "nodeC"}
+    assert target2 in {"nodeA", "nodeB", "nodeC"}
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "markdown_table_formatter",
+        "Markdown Table Auto-Aligner",
+        '''#!/usr/bin/env python3
+"""Clean markdown table parser and column-width auto-aligner."""
+from __future__ import annotations
+
+
+def format_markdown_table(table_text: str) -> str:
+    lines = [l.strip() for l in table_text.strip().splitlines() if l.strip()]
+    rows = [[c.strip() for c in line.strip("|").split("|")] for line in lines]
+    if len(rows) < 2:
+        return table_text
+
+    header = rows[0]
+    data_rows = [r for r in rows[2:]] if any("-" in c for c in rows[1]) else rows[1:]
+    col_count = len(header)
+    widths = [len(h) for h in header]
+
+    for r in data_rows:
+        for i, val in enumerate(r[:col_count]):
+            widths[i] = max(widths[i], len(val))
+
+    def make_line(cells: list[str]) -> str:
+        padded = [cells[i].ljust(widths[i]) if i < len(cells) else "".ljust(widths[i]) for i in range(col_count)]
+        return "| " + " | ".join(padded) + " |"
+
+    sep_line = "| " + " | ".join("-" * w for w in widths) + " |"
+    result = [make_line(header), sep_line]
+    for r in data_rows:
+        result.append(make_line(r))
+    return "\\n".join(result)
+
+
+def self_check() -> None:
+    raw = "|ID|Name|Score|\\n|-|-|-|\\n|1|Alice|95|\\n|20|Bob|8|"
+    formatted = format_markdown_table(raw)
+    assert "| ID | Name  | Score |" in formatted
+    assert "| 1  | Alice | 95    |" in formatted
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "fsm_turnstile",
+        "Finite State Machine Engine",
+        '''#!/usr/bin/env python3
+"""Finite State Machine (FSM) engine with event guards and callbacks."""
+from __future__ import annotations
+
+
+class FiniteStateMachine:
+    def __init__(self, initial_state: str):
+        self.state = initial_state
+        self.transitions: dict[tuple[str, str], str] = {}
+        self.history: list[str] = [initial_state]
+
+    def add_transition(self, from_state: str, event: str, to_state: str) -> None:
+        self.transitions[(from_state, event)] = to_state
+
+    def trigger(self, event: str) -> bool:
+        key = (self.state, event)
+        if key in self.transitions:
+            self.state = self.transitions[key]
+            self.history.append(self.state)
+            return True
+        return False
+
+
+def self_check() -> None:
+    fsm = FiniteStateMachine("LOCKED")
+    fsm.add_transition("LOCKED", "COIN", "UNLOCKED")
+    fsm.add_transition("UNLOCKED", "PUSH", "LOCKED")
+    assert fsm.state == "LOCKED"
+    assert not fsm.trigger("PUSH")
+    assert fsm.trigger("COIN")
+    assert fsm.state == "UNLOCKED"
+    assert fsm.trigger("PUSH")
+    assert fsm.state == "LOCKED"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "roman_numerals",
+        "Roman Numeral Converter",
+        '''#!/usr/bin/env python3
+"""Bidirectional Roman numeral <-> Arabic integer converter."""
+from __future__ import annotations
+
+MAPPINGS = [
+    (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
+    (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+    (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")
+]
+
+
+def to_roman(n: int) -> str:
+    if not (1 <= n <= 3999):
+        raise ValueError("Number out of Roman numeral range (1-3999)")
+    result = []
+    for val, sym in MAPPINGS:
+        while n >= val:
+            result.append(sym)
+            n -= val
+    return "".join(result)
+
+
+def from_roman(s: str) -> int:
+    val_map = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+    total = 0
+    prev = 0
+    for ch in reversed(s):
+        curr = val_map[ch]
+        total = (total - curr) if curr < prev else (total + curr)
+        prev = curr
+    return total
+
+
+def self_check() -> None:
+    assert to_roman(1994) == "MCMXCIV"
+    assert from_roman("MCMXCIV") == 1994
+    assert to_roman(58) == "LVIII"
+    assert from_roman("LVIII") == 58
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+]
+
+PROJECTS.extend(PAST_CHALLENGES)
+PROJECTS.extend(NEW_PROJECTS)
+
+
 def existing_days() -> list[int]:
     days: list[int] = []
     for p in ROOT.iterdir():

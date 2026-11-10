@@ -42,6 +42,23 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 34 | Python Algorithm Challenge #34 | [`day34_challenge_34/challenge_34.py`](day34_challenge_34/challenge_34.py) | ✅ Completed |
 | Day 35 | Python Algorithm Challenge #35 | [`day35_challenge_35/challenge_35.py`](day35_challenge_35/challenge_35.py) | ✅ Completed |
 | Day 36 | Python Algorithm Challenge #36 | [`day36_challenge_36/challenge_36.py`](day36_challenge_36/challenge_36.py) | ✅ Completed |
+| Day 37 | Text Diff Engine (LCS) | [`day37_diff_viewer/diff_viewer.py`](day37_diff_viewer/diff_viewer.py) | ✅ Completed |
 
 ## Upcoming Queue
+
+- **Day 38**: Probabilistic Bloom Filter
+- **Day 39**: Cron Expression Parser
+- **Day 40**: Pub-Sub Event Bus
+- **Day 41**: Minimalist JSON Formatter
+- **Day 42**: Double-Entry Ledger System
+- **Day 43**: Min-Heap Task Scheduler
+- **Day 44**: 2D Spatial QuadTree
+- **Day 45**: Thompson NFA Regex Matcher
+- **Day 46**: Resilient Circuit Breaker
+- **Day 47**: Cryptographic Merkle Tree
+- **Day 48**: String Fuzzy Matcher
+- **Day 49**: Consistent Hashing Ring
+- **Day 50**: Markdown Table Auto-Aligner
+- **Day 51**: Finite State Machine Engine
+- **Day 52**: Roman Numeral Converter
 
