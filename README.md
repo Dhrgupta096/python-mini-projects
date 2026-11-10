@@ -52,10 +52,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 44 | 2D Spatial QuadTree | [`day44_quadtree/quadtree.py`](day44_quadtree/quadtree.py) | ✅ Completed |
 | Day 45 | Thompson NFA Regex Matcher | [`day45_regex_engine/regex_engine.py`](day45_regex_engine/regex_engine.py) | ✅ Completed |
 | Day 46 | Resilient Circuit Breaker | [`day46_circuit_breaker/circuit_breaker.py`](day46_circuit_breaker/circuit_breaker.py) | ✅ Completed |
+| Day 47 | Cryptographic Merkle Tree | [`day47_merkle_tree/merkle_tree.py`](day47_merkle_tree/merkle_tree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 47**: Cryptographic Merkle Tree
 - **Day 48**: String Fuzzy Matcher
 - **Day 49**: Consistent Hashing Ring
 - **Day 50**: Markdown Table Auto-Aligner
