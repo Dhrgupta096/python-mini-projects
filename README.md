@@ -43,10 +43,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 35 | Python Algorithm Challenge #35 | [`day35_challenge_35/challenge_35.py`](day35_challenge_35/challenge_35.py) | ✅ Completed |
 | Day 36 | Python Algorithm Challenge #36 | [`day36_challenge_36/challenge_36.py`](day36_challenge_36/challenge_36.py) | ✅ Completed |
 | Day 37 | Text Diff Engine (LCS) | [`day37_diff_viewer/diff_viewer.py`](day37_diff_viewer/diff_viewer.py) | ✅ Completed |
+| Day 38 | Probabilistic Bloom Filter | [`day38_bloom_filter/bloom_filter.py`](day38_bloom_filter/bloom_filter.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 38**: Probabilistic Bloom Filter
 - **Day 39**: Cron Expression Parser
 - **Day 40**: Pub-Sub Event Bus
 - **Day 41**: Minimalist JSON Formatter
