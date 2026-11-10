@@ -48,10 +48,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 40 | Pub-Sub Event Bus | [`day40_event_emitter/event_emitter.py`](day40_event_emitter/event_emitter.py) | ✅ Completed |
 | Day 41 | Minimalist JSON Formatter | [`day41_json_serializer/json_serializer.py`](day41_json_serializer/json_serializer.py) | ✅ Completed |
 | Day 42 | Double-Entry Ledger System | [`day42_bank_ledger/bank_ledger.py`](day42_bank_ledger/bank_ledger.py) | ✅ Completed |
+| Day 43 | Min-Heap Task Scheduler | [`day43_priority_task_scheduler/priority_task_scheduler.py`](day43_priority_task_scheduler/priority_task_scheduler.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 43**: Min-Heap Task Scheduler
 - **Day 44**: 2D Spatial QuadTree
 - **Day 45**: Thompson NFA Regex Matcher
 - **Day 46**: Resilient Circuit Breaker
