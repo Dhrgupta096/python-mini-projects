@@ -1894,6 +1894,367 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "tar_archiver",
+        "Minimal TAR Archiver",
+        '''#!/usr/bin/env python3
+"""Minimalist UStar TAR archive generator and extractor."""
+from __future__ import annotations
+
+
+def make_tar_header(name: str, size: int) -> bytes:
+    name_bytes = name.encode("utf-8").ljust(100, b"\\x00")
+    mode = b"0000644\\x00"
+    uid = b"0001000\\x00"
+    gid = b"0001000\\x00"
+    size_oct = f"{size:011o}\\x00".encode("ascii")
+    mtime = b"00000000000\\x00"
+    chksum_placeholder = b"        "
+    typeflag = b"0"
+    magic = b"ustar\\x0000"
+    header_pre = (
+        name_bytes + mode + uid + gid + size_oct + mtime + chksum_placeholder + typeflag
+    ).ljust(257, b"\\x00") + magic
+    header_full = header_pre.ljust(512, b"\\x00")
+    chksum = sum(header_full)
+    chksum_bytes = f"{chksum:06o}\\x00 ".encode("ascii")
+    return header_full[:148] + chksum_bytes + header_full[156:]
+
+
+def create_archive(files: dict[str, bytes]) -> bytes:
+    chunks = []
+    for filename, content in files.items():
+        header = make_tar_header(filename, len(content))
+        chunks.append(header)
+        chunks.append(content)
+        pad = (512 - (len(content) % 512)) % 512
+        if pad:
+            chunks.append(b"\\x00" * pad)
+    chunks.append(b"\\x00" * 1024)
+    return b"".join(chunks)
+
+
+def extract_archive(archive_bytes: bytes) -> dict[str, bytes]:
+    files = {}
+    pos = 0
+    while pos + 512 <= len(archive_bytes):
+        header = archive_bytes[pos : pos + 512]
+        if header == b"\\x00" * 512:
+            break
+        name = header[:100].rstrip(b"\\x00").decode("utf-8")
+        size_str = header[124:136].rstrip(b"\\x00 ").decode("ascii")
+        size = int(size_str, 8) if size_str else 0
+        pos += 512
+        content = archive_bytes[pos : pos + size]
+        files[name] = content
+        pad = (512 - (size % 512)) % 512
+        pos += size + pad
+    return files
+
+
+def self_check() -> None:
+    data = {"hello.txt": b"Hello World!\\n", "test.py": b"print(42)\\n"}
+    tar = create_archive(data)
+    extracted = extract_archive(tar)
+    assert extracted == data
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "lisp_evaluator",
+        "Tiny Lisp S-Expression Evaluator",
+        '''#!/usr/bin/env python3
+"""Tiny Scheme/Lisp S-expression parser and tree evaluator."""
+from __future__ import annotations
+from typing import Any
+
+
+def tokenize(chars: str) -> list[str]:
+    return chars.replace("(", " ( ").replace(")", " ) ").split()
+
+
+def parse_tokens(tokens: list[str]) -> Any:
+    if not tokens:
+        raise SyntaxError("Unexpected EOF")
+    token = tokens.pop(0)
+    if token == "(":
+        L = []
+        while tokens and tokens[0] != ")":
+            L.append(parse_tokens(tokens))
+        tokens.pop(0)
+        return L
+    elif token == ")":
+        raise SyntaxError("Unexpected )")
+    try:
+        return int(token)
+    except ValueError:
+        try:
+            return float(token)
+        except ValueError:
+            return token
+
+
+class Env(dict):
+    def __init__(self, params=(), args=(), outer=None):
+        self.update(zip(params, args))
+        self.outer = outer
+
+    def find(self, var: str):
+        return self if var in self else (self.outer.find(var) if self.outer else None)
+
+
+def standard_env() -> Env:
+    env = Env()
+    env.update({
+        "+": lambda a, b: a + b,
+        "-": lambda a, b: a - b,
+        "*": lambda a, b: a * b,
+        "/": lambda a, b: a / b,
+        ">": lambda a, b: a > b,
+        "<": lambda a, b: a < b,
+        "=": lambda a, b: a == b,
+    })
+    return env
+
+
+def evaluate(x: Any, env: Env) -> Any:
+    if isinstance(x, str):
+        e = env.find(x)
+        if e is None:
+            raise NameError(f"Undefined symbol: {x}")
+        return e[x]
+    elif not isinstance(x, list):
+        return x
+    op = x[0]
+    if op == "if":
+        (_, test, conseq, alt) = x
+        exp = conseq if evaluate(test, env) else alt
+        return evaluate(exp, env)
+    elif op == "define":
+        (_, symbol, exp) = x
+        env[symbol] = evaluate(exp, env)
+        return env[symbol]
+    elif op == "lambda":
+        (_, parms, body) = x
+        return lambda *args: evaluate(body, Env(parms, args, env))
+    else:
+        proc = evaluate(op, env)
+        vals = [evaluate(arg, env) for arg in x[1:]]
+        return proc(*vals)
+
+
+def self_check() -> None:
+    global_env = standard_env()
+    t1 = parse_tokens(tokenize("(+ 10 (* 2 3))"))
+    assert evaluate(t1, global_env) == 16
+    t2 = parse_tokens(tokenize("(define square (lambda (r) (* r r)))"))
+    evaluate(t2, global_env)
+    t3 = parse_tokens(tokenize("(square 5)"))
+    assert evaluate(t3, global_env) == 25
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "base64_codec",
+        "RFC 4648 Base64 Codec",
+        '''#!/usr/bin/env python3
+"""RFC 4648 standard Base64 bitwise encoder and decoder."""
+from __future__ import annotations
+
+CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+REV = {ch: i for i, ch in enumerate(CHARS)}
+
+
+def b64_encode(data: bytes) -> str:
+    result = []
+    i = 0
+    n = len(data)
+    while i < n:
+        b0 = data[i]
+        b1 = data[i + 1] if i + 1 < n else 0
+        b2 = data[i + 2] if i + 2 < n else 0
+        triplet = (b0 << 16) | (b1 << 8) | b2
+        result.append(CHARS[(triplet >> 18) & 0x3F])
+        result.append(CHARS[(triplet >> 12) & 0x3F])
+        result.append(CHARS[(triplet >> 6) & 0x3F] if i + 1 < n else "=")
+        result.append(CHARS[triplet & 0x3F] if i + 2 < n else "=")
+        i += 3
+    return "".join(result)
+
+
+def b64_decode(encoded: str) -> bytes:
+    clean = encoded.rstrip("=")
+    val = 0
+    bits = 0
+    out = bytearray()
+    for ch in clean:
+        val = (val << 6) | REV[ch]
+        bits += 6
+        if bits >= 8:
+            bits -= 8
+            out.append((val >> bits) & 0xFF)
+    return bytes(out)
+
+
+def self_check() -> None:
+    cases = [b"M", b"Ma", b"Man", b"Hello, Python!"]
+    for c in cases:
+        enc = b64_encode(c)
+        dec = b64_decode(enc)
+        assert dec == c
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "binary_search_tree",
+        "Balanced AVL Binary Tree",
+        '''#!/usr/bin/env python3
+"""Self-balancing AVL Binary Search Tree implementation."""
+from __future__ import annotations
+
+
+class AVLNode:
+    def __init__(self, key: int):
+        self.key = key
+        self.left: AVLNode | None = None
+        self.right: AVLNode | None = None
+        self.height = 1
+
+
+def get_height(node: AVLNode | None) -> int:
+    return node.height if node else 0
+
+
+def get_balance(node: AVLNode | None) -> int:
+    return get_height(node.left) - get_height(node.right) if node else 0
+
+
+def rotate_right(y: AVLNode) -> AVLNode:
+    x = y.left
+    assert x is not None
+    t2 = x.right
+    x.right = y
+    y.left = t2
+    y.height = 1 + max(get_height(y.left), get_height(y.right))
+    x.height = 1 + max(get_height(x.left), get_height(x.right))
+    return x
+
+
+def rotate_left(x: AVLNode) -> AVLNode:
+    y = x.right
+    assert y is not None
+    t2 = y.left
+    y.left = x
+    x.right = t2
+    x.height = 1 + max(get_height(x.left), get_height(x.right))
+    y.height = 1 + max(get_height(y.left), get_height(y.right))
+    return y
+
+
+def insert_avl(root: AVLNode | None, key: int) -> AVLNode:
+    if not root:
+        return AVLNode(key)
+    if key < root.key:
+        root.left = insert_avl(root.left, key)
+    elif key > root.key:
+        root.right = insert_avl(root.right, key)
+    else:
+        return root
+
+    root.height = 1 + max(get_height(root.left), get_height(root.right))
+    bal = get_balance(root)
+
+    if bal > 1 and root.left and key < root.left.key:
+        return rotate_right(root)
+    if bal < -1 and root.right and key > root.right.key:
+        return rotate_left(root)
+    if bal > 1 and root.left and key > root.left.key:
+        root.left = rotate_left(root.left)
+        return rotate_right(root)
+    if bal < -1 and root.right and key < root.right.key:
+        root.right = rotate_right(root.right)
+        return rotate_left(root)
+    return root
+
+
+def inorder(root: AVLNode | None) -> list[int]:
+    return inorder(root.left) + [root.key] + inorder(root.right) if root else []
+
+
+def self_check() -> None:
+    root = None
+    keys = [10, 20, 30, 40, 50, 25]
+    for k in keys:
+        root = insert_avl(root, k)
+    assert inorder(root) == sorted(keys)
+    assert abs(get_balance(root)) <= 1
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "websocket_frame_parser",
+        "WebSocket Frame Decoder",
+        '''#!/usr/bin/env python3
+"""RFC 6455 WebSocket binary frame decoder and mask unmasker."""
+from __future__ import annotations
+
+
+def parse_ws_frame(data: bytes) -> tuple[int, bool, bytes]:
+    if len(data) < 2:
+        raise ValueError("Frame too short")
+    b1, b2 = data[0], data[1]
+    fin = (b1 & 0x80) != 0
+    opcode = b1 & 0x0F
+    is_masked = (b2 & 0x80) != 0
+    payload_len = b2 & 0x7F
+    offset = 2
+
+    if payload_len == 126:
+        payload_len = int.from_bytes(data[offset : offset + 2], "big")
+        offset += 2
+    elif payload_len == 127:
+        payload_len = int.from_bytes(data[offset : offset + 8], "big")
+        offset += 8
+
+    if is_masked:
+        mask = data[offset : offset + 4]
+        offset += 4
+        masked_payload = data[offset : offset + payload_len]
+        payload = bytes(b ^ mask[i % 4] for i, b in enumerate(masked_payload))
+    else:
+        payload = data[offset : offset + payload_len]
+    return opcode, fin, payload
+
+
+def self_check() -> None:
+    raw = bytes([0x81, 0x85, 0x37, 0xfa, 0x21, 0x3d, 0x7f, 0x9f, 0x4d, 0x51, 0x58])
+    opcode, fin, payload = parse_ws_frame(raw)
+    assert opcode == 1
+    assert fin is True
+    assert payload == b"Hello"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)

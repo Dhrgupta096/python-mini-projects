@@ -53,12 +53,17 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 45 | Thompson NFA Regex Matcher | [`day45_regex_engine/regex_engine.py`](day45_regex_engine/regex_engine.py) | ✅ Completed |
 | Day 46 | Resilient Circuit Breaker | [`day46_circuit_breaker/circuit_breaker.py`](day46_circuit_breaker/circuit_breaker.py) | ✅ Completed |
 | Day 47 | Cryptographic Merkle Tree | [`day47_merkle_tree/merkle_tree.py`](day47_merkle_tree/merkle_tree.py) | ✅ Completed |
+| Day 48 | String Fuzzy Matcher | [`day48_levenshtein_distance/levenshtein_distance.py`](day48_levenshtein_distance/levenshtein_distance.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 48**: String Fuzzy Matcher
 - **Day 49**: Consistent Hashing Ring
 - **Day 50**: Markdown Table Auto-Aligner
 - **Day 51**: Finite State Machine Engine
 - **Day 52**: Roman Numeral Converter
+- **Day 53**: Minimal TAR Archiver
+- **Day 54**: Tiny Lisp S-Expression Evaluator
+- **Day 55**: RFC 4648 Base64 Codec
+- **Day 56**: Balanced AVL Binary Tree
+- **Day 57**: WebSocket Frame Decoder
 
