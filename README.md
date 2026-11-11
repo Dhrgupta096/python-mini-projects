@@ -60,10 +60,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 52 | Roman Numeral Converter | [`day52_roman_numerals/roman_numerals.py`](day52_roman_numerals/roman_numerals.py) | ✅ Completed |
 | Day 53 | Minimal TAR Archiver | [`day53_tar_archiver/tar_archiver.py`](day53_tar_archiver/tar_archiver.py) | ✅ Completed |
 | Day 54 | Tiny Lisp S-Expression Evaluator | [`day54_lisp_evaluator/lisp_evaluator.py`](day54_lisp_evaluator/lisp_evaluator.py) | ✅ Completed |
+| Day 55 | RFC 4648 Base64 Codec | [`day55_base64_codec/base64_codec.py`](day55_base64_codec/base64_codec.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 55**: RFC 4648 Base64 Codec
 - **Day 56**: Balanced AVL Binary Tree
 - **Day 57**: WebSocket Frame Decoder
 
