@@ -61,9 +61,9 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 53 | Minimal TAR Archiver | [`day53_tar_archiver/tar_archiver.py`](day53_tar_archiver/tar_archiver.py) | ✅ Completed |
 | Day 54 | Tiny Lisp S-Expression Evaluator | [`day54_lisp_evaluator/lisp_evaluator.py`](day54_lisp_evaluator/lisp_evaluator.py) | ✅ Completed |
 | Day 55 | RFC 4648 Base64 Codec | [`day55_base64_codec/base64_codec.py`](day55_base64_codec/base64_codec.py) | ✅ Completed |
+| Day 56 | Balanced AVL Binary Tree | [`day56_binary_search_tree/binary_search_tree.py`](day56_binary_search_tree/binary_search_tree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 56**: Balanced AVL Binary Tree
 - **Day 57**: WebSocket Frame Decoder
 
