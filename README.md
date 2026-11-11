@@ -63,6 +63,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 55 | RFC 4648 Base64 Codec | [`day55_base64_codec/base64_codec.py`](day55_base64_codec/base64_codec.py) | ✅ Completed |
 | Day 56 | Balanced AVL Binary Tree | [`day56_binary_search_tree/binary_search_tree.py`](day56_binary_search_tree/binary_search_tree.py) | ✅ Completed |
 | Day 57 | WebSocket Frame Decoder | [`day57_websocket_frame_parser/websocket_frame_parser.py`](day57_websocket_frame_parser/websocket_frame_parser.py) | ✅ Completed |
+| Day 58 | Python Algorithm Challenge #58 | [`day58_challenge_58/challenge_58.py`](day58_challenge_58/challenge_58.py) | ✅ Completed |
 
 ## Upcoming Queue
 
