@@ -56,10 +56,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 48 | String Fuzzy Matcher | [`day48_levenshtein_distance/levenshtein_distance.py`](day48_levenshtein_distance/levenshtein_distance.py) | ✅ Completed |
 | Day 49 | Consistent Hashing Ring | [`day49_consistent_hash/consistent_hash.py`](day49_consistent_hash/consistent_hash.py) | ✅ Completed |
 | Day 50 | Markdown Table Auto-Aligner | [`day50_markdown_table_formatter/markdown_table_formatter.py`](day50_markdown_table_formatter/markdown_table_formatter.py) | ✅ Completed |
+| Day 51 | Finite State Machine Engine | [`day51_fsm_turnstile/fsm_turnstile.py`](day51_fsm_turnstile/fsm_turnstile.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 51**: Finite State Machine Engine
 - **Day 52**: Roman Numeral Converter
 - **Day 53**: Minimal TAR Archiver
 - **Day 54**: Tiny Lisp S-Expression Evaluator
