@@ -71,10 +71,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 63 | Pure Python Matrix Engine | [`day63_matrix_ops/matrix_ops.py`](day63_matrix_ops/matrix_ops.py) | ✅ Completed |
 | Day 64 | Union-Find Disjoint Set | [`day64_disjoint_set/disjoint_set.py`](day64_disjoint_set/disjoint_set.py) | ✅ Completed |
 | Day 65 | RFC 4180 CSV Parser | [`day65_csv_parser/csv_parser.py`](day65_csv_parser/csv_parser.py) | ✅ Completed |
+| Day 66 | Topic Channel Router | [`day66_pubsub_channel_router/pubsub_channel_router.py`](day66_pubsub_channel_router/pubsub_channel_router.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 66**: Topic Channel Router
 - **Day 67**: Bencode BitTorrent Parser
 - **Day 68**: Binary Buffer Deserializer
 
