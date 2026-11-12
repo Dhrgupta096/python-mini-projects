@@ -2255,6 +2255,628 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_58",
+        "Python Algorithm Challenge #58",
+        '''#!/usr/bin/env python3
+"""Day 58: Python Algorithm Challenge #58 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 58."""
+    primes: list[int] = []
+    candidate = max(2, 58)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "lzw_compression",
+        "LZW Compression Codec",
+        '''#!/usr/bin/env python3
+"""Lempel-Ziv-Welch (LZW) dictionary compression and decompression."""
+from __future__ import annotations
+
+
+def lzw_compress(uncompressed: str) -> list[int]:
+    dict_size = 256
+    dictionary = {chr(i): i for i in range(dict_size)}
+    w = ""
+    result = []
+    for c in uncompressed:
+        wc = w + c
+        if wc in dictionary:
+            w = wc
+        else:
+            result.append(dictionary[w])
+            dictionary[wc] = dict_size
+            dict_size += 1
+            w = c
+    if w:
+        result.append(dictionary[w])
+    return result
+
+
+def lzw_decompress(compressed: list[int]) -> str:
+    dict_size = 256
+    dictionary = {i: chr(i) for i in range(dict_size)}
+    if not compressed:
+        return ""
+    w = chr(compressed[0])
+    result = [w]
+    for k in compressed[1:]:
+        if k in dictionary:
+            entry = dictionary[k]
+        elif k == dict_size:
+            entry = w + w[0]
+        else:
+            raise ValueError(f"Bad compressed k: {k}")
+        result.append(entry)
+        dictionary[dict_size] = w + entry[0]
+        dict_size += 1
+        w = entry
+    return "".join(result)
+
+
+def self_check() -> None:
+    text = "TOBEORNOTTOBEORTOBEORNOT"
+    comp = lzw_compress(text)
+    decomp = lzw_decompress(comp)
+    assert decomp == text
+    assert len(comp) < len(text)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "interval_tree",
+        "1D Interval Search Tree",
+        '''#!/usr/bin/env python3
+"""Augmented 1D Interval Tree for fast overlap queries."""
+from __future__ import annotations
+
+
+class IntervalNode:
+    def __init__(self, start: int, end: int):
+        self.start = start
+        self.end = end
+        self.max_end = end
+        self.left: IntervalNode | None = None
+        self.right: IntervalNode | None = None
+
+
+def insert_interval(root: IntervalNode | None, start: int, end: int) -> IntervalNode:
+    if not root:
+        return IntervalNode(start, end)
+    if start < root.start:
+        root.left = insert_interval(root.left, start, end)
+    else:
+        root.right = insert_interval(root.right, start, end)
+    root.max_end = max(root.max_end, end)
+    return root
+
+
+def query_overlaps(root: IntervalNode | None, start: int, end: int) -> list[tuple[int, int]]:
+    results: list[tuple[int, int]] = []
+    if not root or root.max_end < start:
+        return results
+    if root.left and root.left.max_end >= start:
+        results.extend(query_overlaps(root.left, start, end))
+    if not (root.end < start or root.start > end):
+        results.append((root.start, root.end))
+    if root.right and root.start <= end:
+        results.extend(query_overlaps(root.right, start, end))
+    return results
+
+
+def self_check() -> None:
+    root = None
+    intervals = [(15, 20), (10, 30), (17, 19), (5, 20), (12, 15), (30, 40)]
+    for s, e in intervals:
+        root = insert_interval(root, s, e)
+    overlaps = query_overlaps(root, 14, 16)
+    assert (15, 20) in overlaps
+    assert (10, 30) in overlaps
+    assert (5, 20) in overlaps
+    assert (30, 40) not in overlaps
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "topological_sort",
+        "DAG Topological Sorter",
+        '''#!/usr/bin/env python3
+"""Kahn's algorithm for topological sorting of Directed Acyclic Graphs."""
+from __future__ import annotations
+from collections import deque, defaultdict
+
+
+def topological_sort(graph: dict[str, list[str]]) -> list[str]:
+    in_degree = defaultdict(int)
+    all_nodes = set(graph.keys())
+    for node, neighbors in graph.items():
+        for nbr in neighbors:
+            in_degree[nbr] += 1
+            all_nodes.add(nbr)
+    queue = deque([n for n in all_nodes if in_degree[n] == 0])
+    order = []
+    while queue:
+        node = queue.popleft()
+        order.append(node)
+        for nbr in graph.get(node, []):
+            in_degree[nbr] -= 1
+            if in_degree[nbr] == 0:
+                queue.append(nbr)
+    if len(order) != len(all_nodes):
+        raise ValueError("Cycle detected in graph")
+    return order
+
+
+def self_check() -> None:
+    g = {
+        "build": ["test"],
+        "lint": ["test"],
+        "test": ["package"],
+        "package": ["deploy"],
+        "deploy": [],
+    }
+    order = topological_sort(g)
+    assert order.index("test") > order.index("build")
+    assert order.index("test") > order.index("lint")
+    assert order.index("deploy") > order.index("package")
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "huffman_file_packer",
+        "Bitstream Huffman Packer",
+        '''#!/usr/bin/env python3
+"""Byte-aligned bit-packer and unpacker for variable-length bitstreams."""
+from __future__ import annotations
+
+
+class BitStreamWriter:
+    def __init__(self):
+        self.bytes_out = bytearray()
+        self.current_byte = 0
+        self.bit_count = 0
+
+    def write_bit(self, bit: int) -> None:
+        self.current_byte = (self.current_byte << 1) | (bit & 1)
+        self.bit_count += 1
+        if self.bit_count == 8:
+            self.bytes_out.append(self.current_byte)
+            self.current_byte = 0
+            self.bit_count = 0
+
+    def write_bits(self, bit_string: str) -> None:
+        for b in bit_string:
+            self.write_bit(1 if b == "1" else 0)
+
+    def flush(self) -> bytes:
+        if self.bit_count > 0:
+            self.bytes_out.append(self.current_byte << (8 - self.bit_count))
+            self.current_byte = 0
+            self.bit_count = 0
+        return bytes(self.bytes_out)
+
+
+class BitStreamReader:
+    def __init__(self, data: bytes):
+        self.data = data
+        self.byte_pos = 0
+        self.bit_pos = 0
+
+    def read_bit(self) -> int | None:
+        if self.byte_pos >= len(self.data):
+            return None
+        bit = (self.data[self.byte_pos] >> (7 - self.bit_pos)) & 1
+        self.bit_pos += 1
+        if self.bit_pos == 8:
+            self.bit_pos = 0
+            self.byte_pos += 1
+        return bit
+
+
+def self_check() -> None:
+    writer = BitStreamWriter()
+    test_bits = "11010010111"
+    writer.write_bits(test_bits)
+    packed = writer.flush()
+    reader = BitStreamReader(packed)
+    recovered = "".join(str(reader.read_bit()) for _ in range(len(test_bits)))
+    assert recovered == test_bits
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "matrix_ops",
+        "Pure Python Matrix Engine",
+        '''#!/usr/bin/env python3
+"""Pure Python 2D matrix multiplication, transpose, and determinant."""
+from __future__ import annotations
+
+Matrix = list[list[float]]
+
+
+def mat_mul(a: Matrix, b: Matrix) -> Matrix:
+    rows_a, cols_a = len(a), len(a[0])
+    rows_b, cols_b = len(b), len(b[0])
+    if cols_a != rows_b:
+        raise ValueError("Incompatible dimensions for multiplication")
+    res = [[0.0] * cols_b for _ in range(rows_a)]
+    for i in range(rows_a):
+        for j in range(cols_b):
+            res[i][j] = sum(a[i][k] * b[k][j] for k in range(cols_a))
+    return res
+
+
+def mat_transpose(a: Matrix) -> Matrix:
+    return [list(row) for row in zip(*a)]
+
+
+def mat_det(m: Matrix) -> float:
+    n = len(m)
+    if n == 1:
+        return m[0][0]
+    if n == 2:
+        return m[0][0] * m[1][1] - m[0][1] * m[1][0]
+    det = 0.0
+    for c in range(n):
+        sub = [row[:c] + row[c + 1:] for row in m[1:]]
+        det += ((-1) ** c) * m[0][c] * mat_det(sub)
+    return det
+
+
+def self_check() -> None:
+    a = [[1.0, 2.0], [3.0, 4.0]]
+    b = [[2.0, 0.0], [1.0, 2.0]]
+    mul = mat_mul(a, b)
+    assert mul == [[4.0, 4.0], [10.0, 8.0]]
+    assert mat_det(a) == -2.0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "disjoint_set",
+        "Union-Find Disjoint Set",
+        '''#!/usr/bin/env python3
+"""Disjoint Set Union (DSU / Union-Find) with rank heuristic and path compression."""
+from __future__ import annotations
+
+
+class DisjointSet:
+    def __init__(self, elements: list[str]):
+        self.parent = {x: x for x in elements}
+        self.rank = {x: 0 for x in elements}
+        self.count = len(elements)
+
+    def find(self, x: str) -> str:
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x: str, y: str) -> bool:
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x == root_y:
+            return False
+        if self.rank[root_x] < self.rank[root_y]:
+            self.parent[root_x] = root_y
+        elif self.rank[root_x] > self.rank[root_y]:
+            self.parent[root_y] = root_x
+        else:
+            self.parent[root_y] = root_x
+            self.rank[root_x] += 1
+        self.count -= 1
+        return True
+
+    def connected(self, x: str, y: str) -> bool:
+        return self.find(x) == self.find(y)
+
+
+def self_check() -> None:
+    dsu = DisjointSet(["A", "B", "C", "D", "E"])
+    assert dsu.count == 5
+    assert dsu.union("A", "B")
+    assert dsu.union("B", "C")
+    assert not dsu.union("A", "C")
+    assert dsu.connected("A", "C")
+    assert not dsu.connected("A", "D")
+    assert dsu.count == 3
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "csv_parser",
+        "RFC 4180 CSV Parser",
+        '''#!/usr/bin/env python3
+"""RFC 4180 compliant CSV parser supporting quotes and escaped fields."""
+from __future__ import annotations
+
+
+def parse_csv(text: str) -> list[list[str]]:
+    rows: list[list[str]] = []
+    current_row: list[str] = []
+    field: list[str] = []
+    in_quotes = False
+    i = 0
+    n = len(text)
+    while i < n:
+        c = text[i]
+        if in_quotes:
+            if c == '"':
+                if i + 1 < n and text[i + 1] == '"':
+                    field.append('"')
+                    i += 1
+                else:
+                    in_quotes = False
+            else:
+                field.append(c)
+        else:
+            if c == '"':
+                in_quotes = True
+            elif c == ',':
+                current_row.append("".join(field))
+                field = []
+            elif c in '\\r\\n':
+                if c == '\\r' and i + 1 < n and text[i + 1] == '\\n':
+                    i += 1
+                current_row.append("".join(field))
+                rows.append(current_row)
+                current_row = []
+                field = []
+            else:
+                field.append(c)
+        i += 1
+    if field or current_row:
+        current_row.append("".join(field))
+        rows.append(current_row)
+    return rows
+
+
+def self_check() -> None:
+    data = 'name,notes,score\\n"Smith, John","Said ""hello""",95\\nAlice,Regular,100'
+    parsed = parse_csv(data)
+    assert len(parsed) == 3
+    assert parsed[1] == ['Smith, John', 'Said "hello"', '95']
+    assert parsed[2] == ['Alice', 'Regular', '100']
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "pubsub_channel_router",
+        "Topic Channel Router",
+        '''#!/usr/bin/env python3
+"""MQTT-style hierarchical topic message router with '+' and '#' wildcards."""
+from __future__ import annotations
+from typing import Callable, Any
+
+
+class TopicRouter:
+    def __init__(self):
+        self.subscriptions: list[tuple[list[str], Callable[[str, Any], None]]] = []
+
+    def subscribe(self, pattern: str, handler: Callable[[str, Any], None]) -> None:
+        parts = pattern.strip("/").split("/")
+        self.subscriptions.append((parts, handler))
+
+    def _match(self, pattern_parts: list[str], topic_parts: list[str]) -> bool:
+        p_idx, t_idx = 0, 0
+        while p_idx < len(pattern_parts) and t_idx < len(topic_parts):
+            p = pattern_parts[p_idx]
+            if p == "#":
+                return True
+            if p != "+" and p != topic_parts[t_idx]:
+                return False
+            p_idx += 1
+            t_idx += 1
+        if p_idx < len(pattern_parts) and pattern_parts[p_idx] == "#":
+            return True
+        return p_idx == len(pattern_parts) and t_idx == len(topic_parts)
+
+    def publish(self, topic: str, message: Any) -> int:
+        topic_parts = topic.strip("/").split("/")
+        delivered = 0
+        for pat_parts, handler in self.subscriptions:
+            if self._match(pat_parts, topic_parts):
+                handler(topic, message)
+                delivered += 1
+        return delivered
+
+
+def self_check() -> None:
+    router = TopicRouter()
+    log: list[str] = []
+    router.subscribe("home/+/temp", lambda t, m: log.append(f"single:{m}"))
+    router.subscribe("home/#", lambda t, m: log.append(f"multi:{m}"))
+    router.publish("home/kitchen/temp", 22)
+    router.publish("home/living/lights/switch", "on")
+    assert log == ["single:22", "multi:22", "multi:on"]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "bencode_parser",
+        "Bencode BitTorrent Parser",
+        '''#!/usr/bin/env python3
+"""BitTorrent Bencode encoder and decoder for integers, strings, lists, and dicts."""
+from __future__ import annotations
+from typing import Any
+
+
+def bencode_decode(data: bytes) -> Any:
+    pos = 0
+
+    def parse() -> Any:
+        nonlocal pos
+        b = data[pos : pos + 1]
+        if b == b"i":
+            pos += 1
+            end = data.index(b"e", pos)
+            num = int(data[pos:end])
+            pos = end + 1
+            return num
+        elif b == b"l":
+            pos += 1
+            res = []
+            while data[pos : pos + 1] != b"e":
+                res.append(parse())
+            pos += 1
+            return res
+        elif b == b"d":
+            pos += 1
+            res = {}
+            while data[pos : pos + 1] != b"e":
+                k = parse()
+                v = parse()
+                res[k.decode("utf-8") if isinstance(k, bytes) else str(k)] = v
+            pos += 1
+            return res
+        elif b.isdigit():
+            colon = data.index(b":", pos)
+            length = int(data[pos:colon])
+            pos = colon + 1
+            raw = data[pos : pos + length]
+            pos += length
+            return raw
+        raise ValueError(f"Invalid bencode token at {pos}: {b}")
+
+    return parse()
+
+
+def bencode_encode(obj: Any) -> bytes:
+    if isinstance(obj, int):
+        return f"i{obj}e".encode("ascii")
+    if isinstance(obj, bytes):
+        return f"{len(obj)}:".encode("ascii") + obj
+    if isinstance(obj, str):
+        b = obj.encode("utf-8")
+        return f"{len(b)}:".encode("ascii") + b
+    if isinstance(obj, list):
+        return b"l" + b"".join(bencode_encode(x) for x in obj) + b"e"
+    if isinstance(obj, dict):
+        items = sorted(obj.items())
+        return b"d" + b"".join(bencode_encode(k) + bencode_encode(v) for k, v in items) + b"e"
+    raise TypeError(f"Cannot bencode type: {type(obj)}")
+
+
+def self_check() -> None:
+    data = {"announce": "udp://tracker.open.org:1337", "info": {"length": 1048576, "name": "sample.iso"}}
+    encoded = bencode_encode(data)
+    decoded = bencode_decode(encoded)
+    assert decoded["info"]["length"] == 1048576
+    assert decoded["info"]["name"] == b"sample.iso"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "byte_buffer_reader",
+        "Binary Buffer Deserializer",
+        '''#!/usr/bin/env python3
+"""Streaming binary cursor buffer for unpacking primitives and structured bytes."""
+from __future__ import annotations
+import struct
+
+
+class ByteBuffer:
+    def __init__(self, data: bytes):
+        self.data = data
+        self.offset = 0
+
+    def remaining(self) -> int:
+        return len(self.data) - self.offset
+
+    def read_uint8(self) -> int:
+        val = self.data[self.offset]
+        self.offset += 1
+        return val
+
+    def read_uint16_be(self) -> int:
+        val = struct.unpack_from(">H", self.data, self.offset)[0]
+        self.offset += 2
+        return val
+
+    def read_uint32_be(self) -> int:
+        val = struct.unpack_from(">I", self.data, self.offset)[0]
+        self.offset += 4
+        return val
+
+    def read_bytes(self, length: int) -> bytes:
+        val = self.data[self.offset : self.offset + length]
+        self.offset += length
+        return val
+
+    def read_pstring(self) -> str:
+        length = self.read_uint8()
+        return self.read_bytes(length).decode("utf-8")
+
+
+def self_check() -> None:
+    packet = struct.pack(">H B I B", 0xCAFE, 2, 100, 11) + b"Antigravity"
+    buf = ByteBuffer(packet)
+    assert buf.read_uint16_be() == 0xCAFE
+    assert buf.read_uint8() == 2
+    assert buf.read_uint32_be() == 100
+    assert buf.read_pstring() == "Antigravity"
+    assert buf.remaining() == 0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)
