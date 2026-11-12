@@ -74,6 +74,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 66 | Topic Channel Router | [`day66_pubsub_channel_router/pubsub_channel_router.py`](day66_pubsub_channel_router/pubsub_channel_router.py) | ✅ Completed |
 | Day 67 | Bencode BitTorrent Parser | [`day67_bencode_parser/bencode_parser.py`](day67_bencode_parser/bencode_parser.py) | ✅ Completed |
 | Day 68 | Binary Buffer Deserializer | [`day68_byte_buffer_reader/byte_buffer_reader.py`](day68_byte_buffer_reader/byte_buffer_reader.py) | ✅ Completed |
+| Day 69 | Python Algorithm Challenge #69 | [`day69_challenge_69/challenge_69.py`](day69_challenge_69/challenge_69.py) | ✅ Completed |
 
 ## Upcoming Queue
 
