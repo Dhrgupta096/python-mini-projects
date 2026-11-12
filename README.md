@@ -65,10 +65,10 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 57 | WebSocket Frame Decoder | [`day57_websocket_frame_parser/websocket_frame_parser.py`](day57_websocket_frame_parser/websocket_frame_parser.py) | ✅ Completed |
 | Day 58 | Python Algorithm Challenge #58 | [`day58_challenge_58/challenge_58.py`](day58_challenge_58/challenge_58.py) | ✅ Completed |
 | Day 59 | LZW Compression Codec | [`day59_lzw_compression/lzw_compression.py`](day59_lzw_compression/lzw_compression.py) | ✅ Completed |
+| Day 60 | 1D Interval Search Tree | [`day60_interval_tree/interval_tree.py`](day60_interval_tree/interval_tree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 60**: 1D Interval Search Tree
 - **Day 61**: DAG Topological Sorter
 - **Day 62**: Bitstream Huffman Packer
 - **Day 63**: Pure Python Matrix Engine
