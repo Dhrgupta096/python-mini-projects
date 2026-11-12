@@ -73,9 +73,9 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 65 | RFC 4180 CSV Parser | [`day65_csv_parser/csv_parser.py`](day65_csv_parser/csv_parser.py) | ✅ Completed |
 | Day 66 | Topic Channel Router | [`day66_pubsub_channel_router/pubsub_channel_router.py`](day66_pubsub_channel_router/pubsub_channel_router.py) | ✅ Completed |
 | Day 67 | Bencode BitTorrent Parser | [`day67_bencode_parser/bencode_parser.py`](day67_bencode_parser/bencode_parser.py) | ✅ Completed |
+| Day 68 | Binary Buffer Deserializer | [`day68_byte_buffer_reader/byte_buffer_reader.py`](day68_byte_buffer_reader/byte_buffer_reader.py) | ✅ Completed |
 
 ## Upcoming Queue
 
-- **Day 68**: Binary Buffer Deserializer
 
 
