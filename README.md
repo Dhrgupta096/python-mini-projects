@@ -82,6 +82,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 74 | Diffie-Hellman Key Exchange | [`day74_diffie_hellman/diffie_hellman.py`](day74_diffie_hellman/diffie_hellman.py) | ✅ Completed |
 | Day 75 | LSD Radix Sort | [`day75_radix_sort/radix_sort.py`](day75_radix_sort/radix_sort.py) | ✅ Completed |
 | Day 76 | INI Config Parser | [`day76_ini_parser/ini_parser.py`](day76_ini_parser/ini_parser.py) | ✅ Completed |
+| Day 77 | Exponential Backoff Decorator | [`day77_retry_backoff/retry_backoff.py`](day77_retry_backoff/retry_backoff.py) | ✅ Completed |
 
 ## Upcoming Queue
 
