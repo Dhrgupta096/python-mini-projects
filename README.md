@@ -83,6 +83,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 75 | LSD Radix Sort | [`day75_radix_sort/radix_sort.py`](day75_radix_sort/radix_sort.py) | ✅ Completed |
 | Day 76 | INI Config Parser | [`day76_ini_parser/ini_parser.py`](day76_ini_parser/ini_parser.py) | ✅ Completed |
 | Day 77 | Exponential Backoff Decorator | [`day77_retry_backoff/retry_backoff.py`](day77_retry_backoff/retry_backoff.py) | ✅ Completed |
+| Day 78 | Binary Indexed Fenwick Tree | [`day78_fenwick_tree/fenwick_tree.py`](day78_fenwick_tree/fenwick_tree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
