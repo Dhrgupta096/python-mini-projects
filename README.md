@@ -79,6 +79,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 71 | A* Grid Pathfinder | [`day71_astar_search/astar_search.py`](day71_astar_search/astar_search.py) | ✅ Completed |
 | Day 72 | Circular Ring Buffer | [`day72_ring_buffer/ring_buffer.py`](day72_ring_buffer/ring_buffer.py) | ✅ Completed |
 | Day 73 | Shannon-Fano Prefix Coder | [`day73_huffman_adaptive/huffman_adaptive.py`](day73_huffman_adaptive/huffman_adaptive.py) | ✅ Completed |
+| Day 74 | Diffie-Hellman Key Exchange | [`day74_diffie_hellman/diffie_hellman.py`](day74_diffie_hellman/diffie_hellman.py) | ✅ Completed |
 
 ## Upcoming Queue
 
