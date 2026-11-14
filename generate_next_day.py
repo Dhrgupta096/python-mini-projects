@@ -2877,6 +2877,571 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_69",
+        "Python Algorithm Challenge #69",
+        '''#!/usr/bin/env python3
+"""Day 69: Python Algorithm Challenge #69 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 69."""
+    primes: list[int] = []
+    candidate = max(2, 69)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_70",
+        "Python Algorithm Challenge #70",
+        '''#!/usr/bin/env python3
+"""Day 70: Python Algorithm Challenge #70 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    """Return the first n primes greater than or equal to 70."""
+    primes: list[int] = []
+    candidate = max(2, 70)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all( result[i] < result[i + 1] for i in range(4) )
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "astar_search",
+        "A* Grid Pathfinder",
+        '''#!/usr/bin/env python3
+"""A* pathfinding algorithm on 2D grids with Manhattan distance heuristic."""
+from __future__ import annotations
+import heapq
+
+
+def astar(grid: list[str], start: tuple[int, int], goal: tuple[int, int]) -> list[tuple[int, int]] | None:
+    rows, cols = len(grid), len(grid[0])
+    frontier = []
+    heapq.heappush(frontier, (0, start))
+    came_from: dict[tuple[int, int], tuple[int, int] | None] = {start: None}
+    cost_so_far: dict[tuple[int, int], int] = {start: 0}
+
+    def heuristic(a: tuple[int, int], b: tuple[int, int]) -> int:
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+    while frontier:
+        _, current = heapq.heappop(frontier)
+        if current == goal:
+            break
+        r, c = current
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != "#":
+                next_node = (nr, nc)
+                new_cost = cost_so_far[current] + 1
+                if next_node not in cost_so_far or new_cost < cost_so_far[next_node]:
+                    cost_so_far[next_node] = new_cost
+                    priority = new_cost + heuristic(goal, next_node)
+                    heapq.heappush(frontier, (priority, next_node))
+                    came_from[next_node] = current
+
+    if goal not in came_from:
+        return None
+    curr = goal
+    path = []
+    while curr is not None:
+        path.append(curr)
+        curr = came_from[curr]
+    path.reverse()
+    return path
+
+
+def self_check() -> None:
+    maze = [
+        "S..#.",
+        ".#.#.",
+        ".#...",
+        "...#G",
+    ]
+    path = astar(maze, (0, 0), (3, 4))
+    assert path is not None
+    assert path[0] == (0, 0)
+    assert path[-1] == (3, 4)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "ring_buffer",
+        "Circular Ring Buffer",
+        '''#!/usr/bin/env python3
+"""Fixed-size circular FIFO ring buffer with overwrite semantics."""
+from __future__ import annotations
+from typing import Any
+
+
+class RingBuffer:
+    def __init__(self, capacity: int):
+        if capacity <= 0:
+            raise ValueError("Capacity must be positive")
+        self.capacity = capacity
+        self._buf: list[Any] = [None] * capacity
+        self._head = 0
+        self._tail = 0
+        self._size = 0
+
+    def push(self, item: Any) -> None:
+        self._buf[self._tail] = item
+        self._tail = (self._tail + 1) % self.capacity
+        if self._size == self.capacity:
+            self._head = (self._head + 1) % self.capacity
+        else:
+            self._size += 1
+
+    def pop(self) -> Any:
+        if self._size == 0:
+            raise IndexError("pop from an empty ring buffer")
+        item = self._buf[self._head]
+        self._buf[self._head] = None
+        self._head = (self._head + 1) % self.capacity
+        self._size -= 1
+        return item
+
+    def to_list(self) -> list[Any]:
+        res = []
+        for i in range(self._size):
+            res.append(self._buf[(self._head + i) % self.capacity])
+        return res
+
+
+def self_check() -> None:
+    rb = RingBuffer(3)
+    rb.push(1)
+    rb.push(2)
+    rb.push(3)
+    assert rb.to_list() == [1, 2, 3]
+    rb.push(4)
+    assert rb.to_list() == [2, 3, 4]
+    assert rb.pop() == 2
+    assert rb.pop() == 3
+    assert rb.to_list() == [4]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "huffman_adaptive",
+        "Shannon-Fano Prefix Coder",
+        '''#!/usr/bin/env python3
+"""Shannon-Fano optimal prefix-free binary code tree generator."""
+from __future__ import annotations
+
+
+def shannon_fano(frequencies: dict[str, int]) -> dict[str, str]:
+    if not frequencies:
+        return {}
+    sorted_items = sorted(frequencies.items(), key=lambda kv: kv[1], reverse=True)
+    codes = {sym: "" for sym, _ in sorted_items}
+
+    def partition(items: list[tuple[str, int]], prefix: str) -> None:
+        if len(items) == 1:
+            sym, _ = items[0]
+            codes[sym] = prefix or "0"
+            return
+        total = sum(freq for _, freq in items)
+        running = 0
+        split_idx = 0
+        min_diff = total
+        for i, (_, freq) in enumerate(items):
+            running += freq
+            diff = abs(total - 2 * running)
+            if diff < min_diff:
+                min_diff = diff
+                split_idx = i + 1
+        left = items[:split_idx]
+        right = items[split_idx:]
+        partition(left, prefix + "0")
+        partition(right, prefix + "1")
+
+    partition(sorted_items, "")
+    return codes
+
+
+def self_check() -> None:
+    freqs = {"A": 15, "B": 7, "C": 6, "D": 6, "E": 5}
+    codes = shannon_fano(freqs)
+    assert len(codes) == 5
+    assert len(set(codes.values())) == 5
+    for c1 in codes.values():
+        for c2 in codes.values():
+            if c1 != c2:
+                assert not c1.startswith(c2)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "diffie_hellman",
+        "Diffie-Hellman Key Exchange",
+        '''#!/usr/bin/env python3
+"""Modular exponentiation Diffie-Hellman cryptographic key exchange."""
+from __future__ import annotations
+
+
+class DiffieHellman:
+    def __init__(self, p: int = 23, g: int = 5):
+        self.p = p
+        self.g = g
+
+    def generate_keypair(self, private_key: int) -> tuple[int, int]:
+        public_key = pow(self.g, private_key, self.p)
+        return private_key, public_key
+
+    def compute_shared_secret(self, private_key: int, remote_public_key: int) -> int:
+        return pow(remote_public_key, private_key, self.p)
+
+
+def self_check() -> None:
+    dh = DiffieHellman(p=9973, g=5)
+    alice_priv, alice_pub = dh.generate_keypair(123)
+    bob_priv, bob_pub = dh.generate_keypair(456)
+    alice_shared = dh.compute_shared_secret(alice_priv, bob_pub)
+    bob_shared = dh.compute_shared_secret(bob_priv, alice_pub)
+    assert alice_shared == bob_shared
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "radix_sort",
+        "LSD Radix Sort",
+        '''#!/usr/bin/env python3
+"""Least-Significant-Digit (LSD) Radix Sort for integers."""
+from __future__ import annotations
+
+
+def radix_sort(arr: list[int]) -> list[int]:
+    if not arr:
+        return []
+    positives = [x for x in arr if x >= 0]
+    negatives = [-x for x in arr if x < 0]
+
+    def _counting_radix(nums: list[int]) -> list[int]:
+        if not nums:
+            return []
+        max_num = max(nums)
+        exp = 1
+        output = list(nums)
+        while max_num // exp > 0:
+            buckets = [[] for _ in range(10)]
+            for val in output:
+                digit = (val // exp) % 10
+                buckets[digit].append(val)
+            output = [item for b in buckets for item in b]
+            exp *= 10
+        return output
+
+    sorted_pos = _counting_radix(positives)
+    sorted_neg = [-x for x in reversed(_counting_radix(negatives))]
+    return sorted_neg + sorted_pos
+
+
+def self_check() -> None:
+    sample = [170, 45, 75, 90, -802, 24, 2, -66, 0]
+    sorted_arr = radix_sort(sample)
+    assert sorted_arr == sorted(sample)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "ini_parser",
+        "INI Config Parser",
+        '''#!/usr/bin/env python3
+"""Sectioned INI file parser and serializer without external dependencies."""
+from __future__ import annotations
+
+
+def parse_ini(content: str) -> dict[str, dict[str, str]]:
+    result: dict[str, dict[str, str]] = {}
+    current_section = "DEFAULT"
+    result[current_section] = {}
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith(";") or line.startswith("#"):
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            current_section = line[1:-1].strip()
+            result.setdefault(current_section, {})
+        elif "=" in line:
+            key, val = line.split("=", 1)
+            result[current_section][key.strip()] = val.strip()
+    return result
+
+
+def serialize_ini(data: dict[str, dict[str, str]]) -> str:
+    lines = []
+    for section, entries in data.items():
+        if section != "DEFAULT" or entries:
+            lines.append(f"[{section}]")
+            for k, v in entries.items():
+                lines.append(f"{k} = {v}")
+            lines.append("")
+    return "\\n".join(lines).strip() + "\\n"
+
+
+def self_check() -> None:
+    sample = """
+    # Server configuration
+    [server]
+    port = 8080
+    host = localhost
+    [database]
+    name = mydb
+    """
+    parsed = parse_ini(sample)
+    assert parsed["server"]["port"] == "8080"
+    assert parsed["database"]["name"] == "mydb"
+    serialized = serialize_ini(parsed)
+    assert "[server]" in serialized
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "retry_backoff",
+        "Exponential Backoff Decorator",
+        '''#!/usr/bin/env python3
+"""Exponential backoff with full randomized jitter."""
+from __future__ import annotations
+import random
+from typing import Callable, Any
+
+
+def retry_with_backoff(
+    func: Callable[[], Any],
+    max_retries: int = 4,
+    base_delay: float = 0.1,
+    max_delay: float = 1.0,
+    seed: int | None = 42,
+) -> Any:
+    rng = random.Random(seed)
+    attempts = 0
+    while True:
+        try:
+            return func()
+        except Exception:
+            attempts += 1
+            if attempts > max_retries:
+                raise
+            temp = min(max_delay, base_delay * (2 ** (attempts - 1)))
+            sleep_duration = rng.uniform(0, temp)
+
+
+def self_check() -> None:
+    calls = 0
+
+    def flaky() -> str:
+        nonlocal calls
+        calls += 1
+        if calls < 3:
+            raise ConnectionError("Temporary outage")
+        return "success"
+
+    res = retry_with_backoff(flaky, max_retries=4, seed=123)
+    assert res == "success"
+    assert calls == 3
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "fenwick_tree",
+        "Binary Indexed Fenwick Tree",
+        '''#!/usr/bin/env python3
+"""Binary Indexed Tree (Fenwick Tree) for O(log n) point updates and prefix sums."""
+from __future__ import annotations
+
+
+class FenwickTree:
+    def __init__(self, size: int):
+        self.size = size
+        self.tree = [0] * (size + 1)
+
+    def add(self, index: int, delta: int) -> None:
+        idx = index + 1
+        while idx <= self.size:
+            self.tree[idx] += delta
+            idx += idx & -idx
+
+    def prefix_sum(self, index: int) -> int:
+        idx = index + 1
+        total = 0
+        while idx > 0:
+            total += self.tree[idx]
+            idx -= idx & -idx
+        return total
+
+    def range_sum(self, left: int, right: int) -> int:
+        if left > right:
+            return 0
+        return self.prefix_sum(right) - (self.prefix_sum(left - 1) if left > 0 else 0)
+
+
+def self_check() -> None:
+    vals = [3, 2, -1, 6, 5, 4, -3, 3, 7]
+    bit = FenwickTree(len(vals))
+    for i, v in enumerate(vals):
+        bit.add(i, v)
+    assert bit.prefix_sum(4) == sum(vals[:5])
+    assert bit.range_sum(2, 6) == sum(vals[2:7])
+    bit.add(3, 4)
+    assert bit.range_sum(2, 6) == sum(vals[2:7]) + 4
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "semaphore_sync",
+        "Counting Semaphore Sync",
+        '''#!/usr/bin/env python3
+"""Thread-safe Counting Semaphore with context manager support."""
+from __future__ import annotations
+import threading
+
+
+class Semaphore:
+    def __init__(self, value: int = 1):
+        if value < 0:
+            raise ValueError("Semaphore initial value must be >= 0")
+        self._value = value
+        self._cond = threading.Condition(threading.Lock())
+
+    def acquire(self, blocking: bool = True, timeout: float | None = None) -> bool:
+        with self._cond:
+            while self._value == 0:
+                if not blocking or not self._cond.wait(timeout):
+                    return False
+            self._value -= 1
+            return True
+
+    def release(self) -> None:
+        with self._cond:
+            self._value += 1
+            self._cond.notify()
+
+    def __enter__(self) -> bool:
+        self.acquire()
+        return True
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.release()
+
+
+def self_check() -> None:
+    sem = Semaphore(2)
+    assert sem.acquire()
+    assert sem.acquire()
+    assert not sem.acquire(blocking=False)
+    sem.release()
+    assert sem.acquire(blocking=False)
+    with sem:
+        pass
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "uuid_v4",
+        "UUIDv4 Generator",
+        '''#!/usr/bin/env python3
+"""RFC 4122 compliant UUID Version 4 generator and validator."""
+from __future__ import annotations
+import secrets
+import re
+
+
+def generate_uuid4() -> str:
+    random_bytes = bytearray(secrets.token_bytes(16))
+    random_bytes[6] = (random_bytes[6] & 0x0F) | 0x40
+    random_bytes[8] = (random_bytes[8] & 0x3F) | 0x80
+    hex_str = random_bytes.hex()
+    return f"{hex_str[0:8]}-{hex_str[8:12]}-{hex_str[12:16]}-{hex_str[16:20]}-{hex_str[20:32]}"
+
+
+def is_valid_uuid4(uuid_str: str) -> bool:
+    pattern = r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    return bool(re.match(pattern, uuid_str.lower()))
+
+
+def self_check() -> None:
+    u = generate_uuid4()
+    assert len(u) == 36
+    assert is_valid_uuid4(u)
+    assert u[14] == "4"
+    assert u[19] in "89abAB"
+    assert generate_uuid4() != generate_uuid4()
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)

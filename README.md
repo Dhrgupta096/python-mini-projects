@@ -76,6 +76,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 68 | Binary Buffer Deserializer | [`day68_byte_buffer_reader/byte_buffer_reader.py`](day68_byte_buffer_reader/byte_buffer_reader.py) | ✅ Completed |
 | Day 69 | Python Algorithm Challenge #69 | [`day69_challenge_69/challenge_69.py`](day69_challenge_69/challenge_69.py) | ✅ Completed |
 | Day 70 | Python Algorithm Challenge #70 | [`day70_challenge_70/challenge_70.py`](day70_challenge_70/challenge_70.py) | ✅ Completed |
+| Day 71 | A* Grid Pathfinder | [`day71_astar_search/astar_search.py`](day71_astar_search/astar_search.py) | ✅ Completed |
 
 ## Upcoming Queue
 
