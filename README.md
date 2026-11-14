@@ -85,6 +85,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 77 | Exponential Backoff Decorator | [`day77_retry_backoff/retry_backoff.py`](day77_retry_backoff/retry_backoff.py) | ✅ Completed |
 | Day 78 | Binary Indexed Fenwick Tree | [`day78_fenwick_tree/fenwick_tree.py`](day78_fenwick_tree/fenwick_tree.py) | ✅ Completed |
 | Day 79 | Counting Semaphore Sync | [`day79_semaphore_sync/semaphore_sync.py`](day79_semaphore_sync/semaphore_sync.py) | ✅ Completed |
+| Day 80 | UUIDv4 Generator | [`day80_uuid_v4/uuid_v4.py`](day80_uuid_v4/uuid_v4.py) | ✅ Completed |
 
 ## Upcoming Queue
 
