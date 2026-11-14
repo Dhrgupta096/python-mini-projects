@@ -3396,6 +3396,7 @@ def self_check() -> None:
     assert not sem.acquire(blocking=False)
     sem.release()
     assert sem.acquire(blocking=False)
+    sem.release()
     with sem:
         pass
     print("Self-check passed.")

@@ -84,6 +84,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 76 | INI Config Parser | [`day76_ini_parser/ini_parser.py`](day76_ini_parser/ini_parser.py) | ✅ Completed |
 | Day 77 | Exponential Backoff Decorator | [`day77_retry_backoff/retry_backoff.py`](day77_retry_backoff/retry_backoff.py) | ✅ Completed |
 | Day 78 | Binary Indexed Fenwick Tree | [`day78_fenwick_tree/fenwick_tree.py`](day78_fenwick_tree/fenwick_tree.py) | ✅ Completed |
+| Day 79 | Counting Semaphore Sync | [`day79_semaphore_sync/semaphore_sync.py`](day79_semaphore_sync/semaphore_sync.py) | ✅ Completed |
 
 ## Upcoming Queue
 
