@@ -78,6 +78,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 70 | Python Algorithm Challenge #70 | [`day70_challenge_70/challenge_70.py`](day70_challenge_70/challenge_70.py) | ✅ Completed |
 | Day 71 | A* Grid Pathfinder | [`day71_astar_search/astar_search.py`](day71_astar_search/astar_search.py) | ✅ Completed |
 | Day 72 | Circular Ring Buffer | [`day72_ring_buffer/ring_buffer.py`](day72_ring_buffer/ring_buffer.py) | ✅ Completed |
+| Day 73 | Shannon-Fano Prefix Coder | [`day73_huffman_adaptive/huffman_adaptive.py`](day73_huffman_adaptive/huffman_adaptive.py) | ✅ Completed |
 
 ## Upcoming Queue
 
