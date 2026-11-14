@@ -81,6 +81,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 73 | Shannon-Fano Prefix Coder | [`day73_huffman_adaptive/huffman_adaptive.py`](day73_huffman_adaptive/huffman_adaptive.py) | ✅ Completed |
 | Day 74 | Diffie-Hellman Key Exchange | [`day74_diffie_hellman/diffie_hellman.py`](day74_diffie_hellman/diffie_hellman.py) | ✅ Completed |
 | Day 75 | LSD Radix Sort | [`day75_radix_sort/radix_sort.py`](day75_radix_sort/radix_sort.py) | ✅ Completed |
+| Day 76 | INI Config Parser | [`day76_ini_parser/ini_parser.py`](day76_ini_parser/ini_parser.py) | ✅ Completed |
 
 ## Upcoming Queue
 
