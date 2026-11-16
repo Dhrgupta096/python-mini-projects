@@ -97,6 +97,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 89 | Compressed Sparse Row Matrix | [`day89_sparse_matrix/sparse_matrix.py`](day89_sparse_matrix/sparse_matrix.py) | ✅ Completed |
 | Day 90 | Boyer-Moore-Horspool Search | [`day90_boyer_moore/boyer_moore.py`](day90_boyer_moore/boyer_moore.py) | ✅ Completed |
 | Day 91 | Count-Min Sketch | [`day91_count_min_sketch/count_min_sketch.py`](day91_count_min_sketch/count_min_sketch.py) | ✅ Completed |
+| Day 92 | Randomized Treap BST | [`day92_treap/treap.py`](day92_treap/treap.py) | ✅ Completed |
 
 ## Upcoming Queue
 
