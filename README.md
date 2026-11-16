@@ -88,6 +88,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 80 | UUIDv4 Generator | [`day80_uuid_v4/uuid_v4.py`](day80_uuid_v4/uuid_v4.py) | ✅ Completed |
 | Day 81 | Python Algorithm Challenge #81 | [`day81_challenge_81/challenge_81.py`](day81_challenge_81/challenge_81.py) | ✅ Completed |
 | Day 82 | Python Algorithm Challenge #82 | [`day82_challenge_82/challenge_82.py`](day82_challenge_82/challenge_82.py) | ✅ Completed |
+| Day 83 | Probabilistic Skip List | [`day83_skip_list/skip_list.py`](day83_skip_list/skip_list.py) | ✅ Completed |
 
 ## Upcoming Queue
 

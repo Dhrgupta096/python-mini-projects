@@ -3443,6 +3443,730 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_81",
+        "Python Algorithm Challenge #81",
+        '''#!/usr/bin/env python3
+"""Day 81: Python Algorithm Challenge #81 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 81)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_82",
+        "Python Algorithm Challenge #82",
+        '''#!/usr/bin/env python3
+"""Day 82: Python Algorithm Challenge #82 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 82)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "skip_list",
+        "Probabilistic Skip List",
+        '''#!/usr/bin/env python3
+"""Probabilistic Skip List with O(log n) expected search, insert, and delete."""
+from __future__ import annotations
+import random
+
+
+class SkipNode:
+    def __init__(self, key: int, value: str, level: int):
+        self.key = key
+        self.value = value
+        self.forward: list[SkipNode | None] = [None] * (level + 1)
+
+
+class SkipList:
+    MAX_LEVEL = 4
+    P = 0.5
+
+    def __init__(self):
+        self.level = 0
+        self.header = SkipNode(-1, "", self.MAX_LEVEL)
+
+    def _random_level(self) -> int:
+        lvl = 0
+        while random.random() < self.P and lvl < self.MAX_LEVEL:
+            lvl += 1
+        return lvl
+
+    def insert(self, key: int, value: str) -> None:
+        update: list[SkipNode] = [self.header] * (self.MAX_LEVEL + 1)
+        curr = self.header
+        for i in range(self.level, -1, -1):
+            while curr.forward[i] and curr.forward[i].key < key:
+                curr = curr.forward[i]
+            update[i] = curr
+        curr = curr.forward[0]
+        if curr and curr.key == key:
+            curr.value = value
+            return
+        lvl = self._random_level()
+        if lvl > self.level:
+            for i in range(self.level + 1, lvl + 1):
+                update[i] = self.header
+            self.level = lvl
+        new_node = SkipNode(key, value, lvl)
+        for i in range(lvl + 1):
+            new_node.forward[i] = update[i].forward[i]
+            update[i].forward[i] = new_node
+
+    def search(self, key: int) -> str | None:
+        curr = self.header
+        for i in range(self.level, -1, -1):
+            while curr.forward[i] and curr.forward[i].key < key:
+                curr = curr.forward[i]
+        curr = curr.forward[0]
+        return curr.value if (curr and curr.key == key) else None
+
+    def delete(self, key: int) -> bool:
+        update: list[SkipNode] = [self.header] * (self.MAX_LEVEL + 1)
+        curr = self.header
+        for i in range(self.level, -1, -1):
+            while curr.forward[i] and curr.forward[i].key < key:
+                curr = curr.forward[i]
+            update[i] = curr
+        curr = curr.forward[0]
+        if not curr or curr.key != key:
+            return False
+        for i in range(self.level + 1):
+            if update[i].forward[i] != curr:
+                break
+            update[i].forward[i] = curr.forward[i]
+        while self.level > 0 and self.header.forward[self.level] is None:
+            self.level -= 1
+        return True
+
+
+def self_check() -> None:
+    sl = SkipList()
+    sl.insert(3, "three")
+    sl.insert(1, "one")
+    sl.insert(7, "seven")
+    sl.insert(5, "five")
+    assert sl.search(1) == "one"
+    assert sl.search(3) == "three"
+    assert sl.search(5) == "five"
+    assert sl.search(7) == "seven"
+    assert sl.search(9) is None
+    sl.insert(3, "THREE")
+    assert sl.search(3) == "THREE"
+    assert sl.delete(3)
+    assert sl.search(3) is None
+    assert not sl.delete(99)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "kd_tree",
+        "2D Spatial K-D Tree",
+        '''#!/usr/bin/env python3
+"""2D K-D Tree for spatial partitioning and exact nearest neighbor query."""
+from __future__ import annotations
+import math
+
+Point2D = tuple[float, float]
+
+
+class KDNode:
+    def __init__(self, point: Point2D, left: KDNode | None = None, right: KDNode | None = None):
+        self.point = point
+        self.left = left
+        self.right = right
+
+
+def build_kd_tree(points: list[Point2D], depth: int = 0) -> KDNode | None:
+    if not points:
+        return None
+    axis = depth % 2
+    points.sort(key=lambda p: p[axis])
+    median = len(points) // 2
+    return KDNode(
+        point=points[median],
+        left=build_kd_tree(points[:median], depth + 1),
+        right=build_kd_tree(points[median + 1:], depth + 1),
+    )
+
+
+def nearest_neighbor(root: KDNode | None, target: Point2D) -> tuple[Point2D | None, float]:
+    best_point: Point2D | None = None
+    best_dist = float("inf")
+
+    def search(node: KDNode | None, depth: int) -> None:
+        nonlocal best_point, best_dist
+        if not node:
+            return
+        d = math.hypot(node.point[0] - target[0], node.point[1] - target[1])
+        if d < best_dist:
+            best_dist = d
+            best_point = node.point
+        axis = depth % 2
+        diff = target[axis] - node.point[axis]
+        first = node.left if diff < 0 else node.right
+        second = node.right if diff < 0 else node.left
+        search(first, depth + 1)
+        if abs(diff) < best_dist:
+            search(second, depth + 1)
+
+    search(root, 0)
+    return best_point, best_dist
+
+
+def self_check() -> None:
+    pts: list[Point2D] = [(2.0, 3.0), (5.0, 4.0), (9.0, 6.0), (4.0, 7.0), (8.0, 1.0), (7.0, 2.0)]
+    tree = build_kd_tree(pts)
+    assert tree is not None
+    nn, dist = nearest_neighbor(tree, (9.0, 2.0))
+    assert nn == (8.0, 1.0)
+    assert round(dist, 4) == round(math.hypot(1.0, 1.0), 4)
+    nn2, _ = nearest_neighbor(tree, (2.0, 3.1))
+    assert nn2 == (2.0, 3.0)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "jwt_codec",
+        "JSON Web Token Codec",
+        '''#!/usr/bin/env python3
+"""RFC 7519 JSON Web Token (JWT) Signer and Verifier using HMAC-SHA256."""
+from __future__ import annotations
+import base64
+import hashlib
+import hmac
+import json
+import time
+
+
+def _b64url_encode(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).decode("utf-8").rstrip("=")
+
+
+def _b64url_decode(s: str) -> bytes:
+    rem = len(s) % 4
+    if rem:
+        s += "=" * (4 - rem)
+    return base64.urlsafe_b64decode(s.encode("utf-8"))
+
+
+def encode_jwt(payload: dict, secret: str) -> str:
+    header = {"alg": "HS256", "typ": "JWT"}
+    h_bytes = json.dumps(header, separators=(",", ":")).encode("utf-8")
+    p_bytes = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    h_b64 = _b64url_encode(h_bytes)
+    p_b64 = _b64url_encode(p_bytes)
+    signing_input = f"{h_b64}.{p_b64}".encode("utf-8")
+    sig = hmac.new(secret.encode("utf-8"), signing_input, hashlib.sha256).digest()
+    return f"{h_b64}.{p_b64}.{_b64url_encode(sig)}"
+
+
+def decode_jwt(token: str, secret: str) -> dict:
+    parts = token.split(".")
+    if len(parts) != 3:
+        raise ValueError("Invalid JWT format")
+    h_b64, p_b64, s_b64 = parts
+    signing_input = f"{h_b64}.{p_b64}".encode("utf-8")
+    expected_sig = hmac.new(secret.encode("utf-8"), signing_input, hashlib.sha256).digest()
+    actual_sig = _b64url_decode(s_b64)
+    if not hmac.compare_digest(expected_sig, actual_sig):
+        raise ValueError("Invalid JWT signature")
+    payload = json.loads(_b64url_decode(p_b64).decode("utf-8"))
+    if "exp" in payload and payload["exp"] < time.time():
+        raise ValueError("Token expired")
+    return payload
+
+
+def self_check() -> None:
+    secret = "super-secret-key-123"
+    claims = {"sub": "user_42", "role": "admin", "exp": int(time.time()) + 3600}
+    token = encode_jwt(claims, secret)
+    assert token.count(".") == 2
+    decoded = decode_jwt(token, secret)
+    assert decoded["sub"] == "user_42"
+    assert decoded["role"] == "admin"
+    try:
+        decode_jwt(token, "wrong-key")
+        assert False, "Should fail with wrong key"
+    except ValueError:
+        pass
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "shunting_yard",
+        "Shunting-Yard Infix Parser",
+        '''#!/usr/bin/env python3
+"""Dijkstra's Shunting-Yard Algorithm to parse and evaluate infix math expressions."""
+from __future__ import annotations
+import re
+
+
+def tokenize(expr: str) -> list[str]:
+    return re.findall(r"\\d+\\.?\\d*|[+\\-*/()^]", expr)
+
+
+def infix_to_rpn(tokens: list[str]) -> list[str]:
+    precedence = {"+": 1, "-": 1, "*": 2, "/": 2, "^": 3}
+    associativity = {"+": "L", "-": "L", "*": "L", "/": "L", "^": "R"}
+    output: list[str] = []
+    ops: list[str] = []
+
+    for tok in tokens:
+        if re.match(r"^\\d", tok):
+            output.append(tok)
+        elif tok in precedence:
+            while (
+                ops and ops[-1] in precedence
+                and (
+                    (associativity[tok] == "L" and precedence[tok] <= precedence[ops[-1]])
+                    or (associativity[tok] == "R" and precedence[tok] < precedence[ops[-1]])
+                )
+            ):
+                output.append(ops.pop())
+            ops.append(tok)
+        elif tok == "(":
+            ops.append(tok)
+        elif tok == ")":
+            while ops and ops[-1] != "(":
+                output.append(ops.pop())
+            if not ops:
+                raise ValueError("Mismatched parentheses")
+            ops.pop()
+    while ops:
+        if ops[-1] in "()":
+            raise ValueError("Mismatched parentheses")
+        output.append(ops.pop())
+    return output
+
+
+def eval_rpn(tokens: list[str]) -> float:
+    stack: list[float] = []
+    for tok in tokens:
+        if re.match(r"^\\d", tok):
+            stack.append(float(tok))
+        else:
+            b = stack.pop()
+            a = stack.pop()
+            if tok == "+":
+                stack.append(a + b)
+            elif tok == "-":
+                stack.append(a - b)
+            elif tok == "*":
+                stack.append(a * b)
+            elif tok == "/":
+                stack.append(a / b)
+            elif tok == "^":
+                stack.append(a ** b)
+    return stack[0]
+
+
+def evaluate(expr: str) -> float:
+    return eval_rpn(infix_to_rpn(tokenize(expr)))
+
+
+def self_check() -> None:
+    assert evaluate("3 + 4 * 2 / ( 1 - 5 ) ^ 2") == 3.5
+    assert evaluate("(2 + 3) * 4") == 20.0
+    assert evaluate("2 ^ 3 ^ 2") == 512.0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "token_bucket",
+        "Token Bucket Rate Limiter",
+        '''#!/usr/bin/env python3
+"""Token Bucket Rate Limiter algorithm for traffic shaping and burst handling."""
+from __future__ import annotations
+import time
+
+
+class TokenBucket:
+    def __init__(self, capacity: float, refill_rate: float, current_tokens: float | None = None):
+        self.capacity = float(capacity)
+        self.refill_rate = float(refill_rate)
+        self.tokens = self.capacity if current_tokens is None else float(current_tokens)
+        self.last_refill = time.monotonic()
+
+    def _refill(self, now: float | None = None) -> None:
+        t = time.monotonic() if now is None else now
+        elapsed = t - self.last_refill
+        if elapsed > 0:
+            self.tokens = min(self.capacity, self.tokens + elapsed * self.refill_rate)
+            self.last_refill = t
+
+    def consume(self, tokens: float = 1.0, now: float | None = None) -> bool:
+        self._refill(now)
+        if self.tokens >= tokens:
+            self.tokens -= tokens
+            return True
+        return False
+
+
+def self_check() -> None:
+    tb = TokenBucket(capacity=5.0, refill_rate=2.0)
+    assert tb.consume(3.0, now=10.0)
+    assert tb.consume(2.0, now=10.0)
+    assert not tb.consume(1.0, now=10.0)
+    assert tb.consume(1.0, now=10.5)
+    assert not tb.consume(1.0, now=10.5)
+    assert tb.consume(2.0, now=11.5)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rc4_cipher",
+        "RC4 Keystream Cipher",
+        '''#!/usr/bin/env python3
+"""Rivest RC4 symmetric stream cipher keystream generator and encryptor/decryptor."""
+from __future__ import annotations
+
+
+class RC4:
+    def __init__(self, key: bytes):
+        if not key:
+            raise ValueError("Key must not be empty")
+        self.s = list(range(256))
+        j = 0
+        for i in range(256):
+            j = (j + self.s[i] + key[i % len(key)]) % 256
+            self.s[i], self.s[j] = self.s[j], self.s[i]
+        self.i = 0
+        self.j = 0
+
+    def _generator(self):
+        while True:
+            self.i = (self.i + 1) % 256
+            self.j = (self.j + self.s[self.i]) % 256
+            self.s[self.i], self.s[self.j] = self.s[self.j], self.s[self.i]
+            k = self.s[(self.s[self.i] + self.s[self.j]) % 256]
+            yield k
+
+    def crypt(self, data: bytes) -> bytes:
+        gen = self._generator()
+        return bytes(b ^ next(gen) for b in data)
+
+
+def self_check() -> None:
+    key = b"SecretKey"
+    plaintext = b"Hello, Python Mini-Projects!"
+    cipher = RC4(key)
+    ciphertext = cipher.crypt(plaintext)
+    assert ciphertext != plaintext
+    decipher = RC4(key)
+    decrypted = decipher.crypt(ciphertext)
+    assert decrypted == plaintext
+
+    test_rc4 = RC4(b"Key")
+    assert test_rc4.crypt(b"Plaintext").hex() == "bbf316e8d940af0ad3"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "sparse_matrix",
+        "Compressed Sparse Row Matrix",
+        '''#!/usr/bin/env python3
+"""Compressed Sparse Row (CSR) matrix representation and vector multiplication."""
+from __future__ import annotations
+
+
+class CSRMatrix:
+    def __init__(self, dense_matrix: list[list[float]]):
+        self.rows = len(dense_matrix)
+        self.cols = len(dense_matrix[0]) if self.rows > 0 else 0
+        self.values: list[float] = []
+        self.col_indices: list[int] = []
+        self.row_ptr: list[int] = [0]
+
+        for row in dense_matrix:
+            for c, val in enumerate(row):
+                if val != 0:
+                    self.values.append(val)
+                    self.col_indices.append(c)
+            self.row_ptr.append(len(self.values))
+
+    def matvec(self, x: list[float]) -> list[float]:
+        if len(x) != self.cols:
+            raise ValueError(f"Dimension mismatch: expected {self.cols}, got {len(x)}")
+        result = [0.0] * self.rows
+        for r in range(self.rows):
+            start = self.row_ptr[r]
+            end = self.row_ptr[r + 1]
+            row_sum = 0.0
+            for idx in range(start, end):
+                row_sum += self.values[idx] * x[self.col_indices[idx]]
+            result[r] = row_sum
+        return result
+
+    def sparsity(self) -> float:
+        total = self.rows * self.cols
+        if total == 0:
+            return 0.0
+        return 1.0 - (len(self.values) / total)
+
+
+def self_check() -> None:
+    dense = [
+        [1.0, 0.0, 0.0, 2.0],
+        [0.0, 0.0, 3.0, 0.0],
+        [4.0, 0.0, 0.0, 5.0],
+    ]
+    csr = CSRMatrix(dense)
+    assert csr.values == [1.0, 2.0, 3.0, 4.0, 5.0]
+    assert csr.col_indices == [0, 3, 2, 0, 3]
+    assert csr.row_ptr == [0, 2, 3, 5]
+    vec = [1.0, 2.0, 3.0, 4.0]
+    out = csr.matvec(vec)
+    assert out == [9.0, 9.0, 24.0]
+    assert round(csr.sparsity(), 4) == round(7 / 12, 4)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "boyer_moore",
+        "Boyer-Moore-Horspool Search",
+        '''#!/usr/bin/env python3
+"""Boyer-Moore-Horspool sublinear exact pattern searching algorithm."""
+from __future__ import annotations
+
+
+def bad_character_table(pattern: str) -> dict[str, int]:
+    m = len(pattern)
+    table: dict[str, int] = {}
+    for i in range(m - 1):
+        table[pattern[i]] = m - 1 - i
+    return table
+
+
+def search(pattern: str, text: str) -> list[int]:
+    m = len(pattern)
+    n = len(text)
+    if m == 0 or n < m:
+        return []
+
+    shift = bad_character_table(pattern)
+    matches: list[int] = []
+    i = 0
+    while i <= n - m:
+        j = m - 1
+        while j >= 0 and text[i + j] == pattern[j]:
+            j -= 1
+        if j < 0:
+            matches.append(i)
+            i += shift.get(text[i + m - 1], m)
+        else:
+            i += shift.get(text[i + m - 1], m)
+    return matches
+
+
+def self_check() -> None:
+    text = "ABAAABCDABC"
+    assert search("ABC", text) == [4, 8]
+    assert search("NOT_HERE", text) == []
+    assert search("A", text) == [0, 2, 3, 4, 7]
+    assert search("ABAA", text) == [0]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "count_min_sketch",
+        "Count-Min Sketch",
+        '''#!/usr/bin/env python3
+"""Count-Min Sketch probabilistic data structure for frequency estimation in streams."""
+from __future__ import annotations
+import hashlib
+
+
+class CountMinSketch:
+    def __init__(self, width: int = 1000, depth: int = 5):
+        self.width = width
+        self.depth = depth
+        self.table = [[0] * width for _ in range(depth)]
+
+    def _hashes(self, item: str) -> list[int]:
+        b = item.encode("utf-8")
+        indices: list[int] = []
+        for i in range(self.depth):
+            h = int(hashlib.md5(b + bytes([i])).hexdigest(), 16)
+            indices.append(h % self.width)
+        return indices
+
+    def add(self, item: str, count: int = 1) -> None:
+        for d, idx in enumerate(self._hashes(item)):
+            self.table[d][idx] += count
+
+    def estimate(self, item: str) -> int:
+        return min(self.table[d][idx] for d, idx in enumerate(self._hashes(item)))
+
+
+def self_check() -> None:
+    cms = CountMinSketch(width=500, depth=5)
+    for _ in range(50):
+        cms.add("apple")
+    for _ in range(25):
+        cms.add("banana")
+    assert cms.estimate("apple") >= 50
+    assert cms.estimate("banana") >= 25
+    assert cms.estimate("cherry") == 0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "treap",
+        "Randomized Treap BST",
+        '''#!/usr/bin/env python3
+"""Treap data structure combining Binary Search Tree keys and Heap priorities."""
+from __future__ import annotations
+import random
+
+
+class TreapNode:
+    def __init__(self, key: int, priority: float | None = None):
+        self.key = key
+        self.priority = random.random() if priority is None else priority
+        self.left: TreapNode | None = None
+        self.right: TreapNode | None = None
+
+
+def _rotate_right(y: TreapNode) -> TreapNode:
+    x = y.left
+    assert x is not None
+    y.left = x.right
+    x.right = y
+    return x
+
+
+def _rotate_left(x: TreapNode) -> TreapNode:
+    y = x.right
+    assert y is not None
+    x.right = y.left
+    y.left = x
+    return y
+
+
+def insert(root: TreapNode | None, key: int, priority: float | None = None) -> TreapNode:
+    if root is None:
+        return TreapNode(key, priority)
+    if key < root.key:
+        root.left = insert(root.left, key, priority)
+        if root.left.priority > root.priority:
+            root = _rotate_right(root)
+    elif key > root.key:
+        root.right = insert(root.right, key, priority)
+        if root.right.priority > root.priority:
+            root = _rotate_left(root)
+    return root
+
+
+def search(root: TreapNode | None, key: int) -> bool:
+    curr = root
+    while curr:
+        if curr.key == key:
+            return True
+        curr = curr.left if key < curr.key else curr.right
+    return False
+
+
+def inorder(root: TreapNode | None) -> list[int]:
+    res: list[int] = []
+    if root:
+        res.extend(inorder(root.left))
+        res.append(root.key)
+        res.extend(inorder(root.right))
+    return res
+
+
+def self_check() -> None:
+    root: TreapNode | None = None
+    keys = [50, 30, 20, 40, 70, 60, 80]
+    for k in keys:
+        root = insert(root, k)
+    assert inorder(root) == sorted(keys)
+    assert search(root, 40)
+    assert search(root, 70)
+    assert not search(root, 99)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)
