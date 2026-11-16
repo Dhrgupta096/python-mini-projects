@@ -98,6 +98,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 90 | Boyer-Moore-Horspool Search | [`day90_boyer_moore/boyer_moore.py`](day90_boyer_moore/boyer_moore.py) | ✅ Completed |
 | Day 91 | Count-Min Sketch | [`day91_count_min_sketch/count_min_sketch.py`](day91_count_min_sketch/count_min_sketch.py) | ✅ Completed |
 | Day 92 | Randomized Treap BST | [`day92_treap/treap.py`](day92_treap/treap.py) | ✅ Completed |
+| Day 93 | Python Algorithm Challenge #93 | [`day93_challenge_93/challenge_93.py`](day93_challenge_93/challenge_93.py) | ✅ Completed |
 
 ## Upcoming Queue
 
