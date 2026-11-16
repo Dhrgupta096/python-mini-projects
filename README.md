@@ -94,6 +94,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 86 | Shunting-Yard Infix Parser | [`day86_shunting_yard/shunting_yard.py`](day86_shunting_yard/shunting_yard.py) | ✅ Completed |
 | Day 87 | Token Bucket Rate Limiter | [`day87_token_bucket/token_bucket.py`](day87_token_bucket/token_bucket.py) | ✅ Completed |
 | Day 88 | RC4 Keystream Cipher | [`day88_rc4_cipher/rc4_cipher.py`](day88_rc4_cipher/rc4_cipher.py) | ✅ Completed |
+| Day 89 | Compressed Sparse Row Matrix | [`day89_sparse_matrix/sparse_matrix.py`](day89_sparse_matrix/sparse_matrix.py) | ✅ Completed |
 
 ## Upcoming Queue
 
