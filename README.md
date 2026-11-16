@@ -93,6 +93,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 85 | JSON Web Token Codec | [`day85_jwt_codec/jwt_codec.py`](day85_jwt_codec/jwt_codec.py) | ✅ Completed |
 | Day 86 | Shunting-Yard Infix Parser | [`day86_shunting_yard/shunting_yard.py`](day86_shunting_yard/shunting_yard.py) | ✅ Completed |
 | Day 87 | Token Bucket Rate Limiter | [`day87_token_bucket/token_bucket.py`](day87_token_bucket/token_bucket.py) | ✅ Completed |
+| Day 88 | RC4 Keystream Cipher | [`day88_rc4_cipher/rc4_cipher.py`](day88_rc4_cipher/rc4_cipher.py) | ✅ Completed |
 
 ## Upcoming Queue
 
