@@ -96,6 +96,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 88 | RC4 Keystream Cipher | [`day88_rc4_cipher/rc4_cipher.py`](day88_rc4_cipher/rc4_cipher.py) | ✅ Completed |
 | Day 89 | Compressed Sparse Row Matrix | [`day89_sparse_matrix/sparse_matrix.py`](day89_sparse_matrix/sparse_matrix.py) | ✅ Completed |
 | Day 90 | Boyer-Moore-Horspool Search | [`day90_boyer_moore/boyer_moore.py`](day90_boyer_moore/boyer_moore.py) | ✅ Completed |
+| Day 91 | Count-Min Sketch | [`day91_count_min_sketch/count_min_sketch.py`](day91_count_min_sketch/count_min_sketch.py) | ✅ Completed |
 
 ## Upcoming Queue
 
