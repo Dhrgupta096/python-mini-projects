@@ -91,6 +91,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 83 | Probabilistic Skip List | [`day83_skip_list/skip_list.py`](day83_skip_list/skip_list.py) | ✅ Completed |
 | Day 84 | 2D Spatial K-D Tree | [`day84_kd_tree/kd_tree.py`](day84_kd_tree/kd_tree.py) | ✅ Completed |
 | Day 85 | JSON Web Token Codec | [`day85_jwt_codec/jwt_codec.py`](day85_jwt_codec/jwt_codec.py) | ✅ Completed |
+| Day 86 | Shunting-Yard Infix Parser | [`day86_shunting_yard/shunting_yard.py`](day86_shunting_yard/shunting_yard.py) | ✅ Completed |
 
 ## Upcoming Queue
 
