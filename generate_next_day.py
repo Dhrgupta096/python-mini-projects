@@ -4030,7 +4030,7 @@ def self_check() -> None:
     text = "ABAAABCDABC"
     assert search("ABC", text) == [4, 8]
     assert search("NOT_HERE", text) == []
-    assert search("A", text) == [0, 2, 3, 4, 7]
+    assert search("A", text) == [0, 2, 3, 4, 8]
     assert search("ABAA", text) == [0]
     print("Self-check passed.")
 
