@@ -4167,6 +4167,627 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_93",
+        "Python Algorithm Challenge #93",
+        '''#!/usr/bin/env python3
+"""Day 93: Python Algorithm Challenge #93 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 93)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "challenge_94",
+        "Python Algorithm Challenge #94",
+        '''#!/usr/bin/env python3
+"""Day 94: Python Algorithm Challenge #94 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 94)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "kmp_search",
+        "KMP Substring Search",
+        '''#!/usr/bin/env python3
+"""Knuth-Morris-Pratt (KMP) O(n+m) exact substring search using LPS array."""
+from __future__ import annotations
+
+
+def build_lps(pattern: str) -> list[int]:
+    lps = [0] * len(pattern)
+    length = 0
+    i = 1
+    while i < len(pattern):
+        if pattern[i] == pattern[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        elif length != 0:
+            length = lps[length - 1]
+        else:
+            lps[i] = 0
+            i += 1
+    return lps
+
+
+def kmp_search(pattern: str, text: str) -> list[int]:
+    if not pattern:
+        return []
+    lps = build_lps(pattern)
+    matches: list[int] = []
+    i = j = 0
+    while i < len(text):
+        if text[i] == pattern[j]:
+            i += 1
+            j += 1
+            if j == len(pattern):
+                matches.append(i - j)
+                j = lps[j - 1]
+        elif j != 0:
+            j = lps[j - 1]
+        else:
+            i += 1
+    return matches
+
+
+def self_check() -> None:
+    assert build_lps("ABABCABAB") == [0, 0, 1, 2, 0, 1, 2, 3, 4]
+    assert kmp_search("ABAB", "ABABABCABAB") == [0, 2, 7]
+    assert kmp_search("XYZ", "ABCDEF") == []
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "segment_tree",
+        "Segment Tree Range Query",
+        '''#!/usr/bin/env python3
+"""Iterative Segment Tree for O(log n) range sum queries and point updates."""
+from __future__ import annotations
+
+
+class SegmentTree:
+    def __init__(self, data: list[int]):
+        self.n = len(data)
+        self.tree = [0] * (2 * self.n)
+        for i, val in enumerate(data):
+            self.tree[self.n + i] = val
+        for i in range(self.n - 1, 0, -1):
+            self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+
+    def update(self, index: int, value: int) -> None:
+        pos = index + self.n
+        self.tree[pos] = value
+        while pos > 1:
+            pos //= 2
+            self.tree[pos] = self.tree[2 * pos] + self.tree[2 * pos + 1]
+
+    def query(self, left: int, right: int) -> int:
+        """Return sum on half-open interval [left, right)."""
+        res = 0
+        l = left + self.n
+        r = right + self.n
+        while l < r:
+            if l & 1:
+                res += self.tree[l]
+                l += 1
+            if r & 1:
+                r -= 1
+                res += self.tree[r]
+            l //= 2
+            r //= 2
+        return res
+
+
+def self_check() -> None:
+    st = SegmentTree([1, 3, 5, 7, 9, 11])
+    assert st.query(0, 6) == 36
+    assert st.query(1, 4) == 15
+    st.update(2, 10)
+    assert st.query(1, 4) == 20
+    assert st.query(0, 6) == 41
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "hyperloglog",
+        "HyperLogLog Cardinality",
+        '''#!/usr/bin/env python3
+"""HyperLogLog probabilistic distinct-count cardinality estimator."""
+from __future__ import annotations
+import hashlib
+import math
+
+
+class HyperLogLog:
+    def __init__(self, b: int = 8):
+        self.b = b
+        self.m = 1 << b
+        self.registers = [0] * self.m
+        self.alpha = 0.7213 / (1.0 + 1.079 / self.m)
+
+    def _hash64(self, item: str) -> int:
+        digest = hashlib.sha256(item.encode("utf-8")).digest()
+        return int.from_bytes(digest[:8], "big")
+
+    def add(self, item: str) -> None:
+        x = self._hash64(item)
+        idx = x >> (64 - self.b)
+        w = x & ((1 << (64 - self.b)) - 1)
+        rho = (64 - self.b) - w.bit_length() + 1 if w != 0 else (64 - self.b + 1)
+        if rho > self.registers[idx]:
+            self.registers[idx] = rho
+
+    def count(self) -> int:
+        z = sum(2.0 ** (-r) for r in self.registers)
+        est = self.alpha * (self.m ** 2) / z
+        if est <= 2.5 * self.m:
+            zeros = self.registers.count(0)
+            if zeros > 0:
+                est = self.m * math.log(self.m / zeros)
+        return round(est)
+
+
+def self_check() -> None:
+    hll = HyperLogLog(b=10)
+    for i in range(1000):
+        hll.add(f"user_{i}")
+    for i in range(500):
+        hll.add(f"user_{i}")
+    est = hll.count()
+    assert 850 <= est <= 1150, f"Unexpected estimate: {est}"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "vigenere_cipher",
+        "Vigenere Cipher Engine",
+        '''#!/usr/bin/env python3
+"""Polyalphabetic Vigenere cipher encoder and decoder for ASCII letters."""
+from __future__ import annotations
+
+
+def _transform(text: str, key: str, decrypt: bool = False) -> str:
+    clean_key = [ord(c.upper()) - ord("A") for c in key if c.isalpha()]
+    if not clean_key:
+        raise ValueError("Key must contain at least one alphabetic character")
+    out: list[str] = []
+    ki = 0
+    for ch in text:
+        if ch.isalpha():
+            base = ord("A") if ch.isupper() else ord("a")
+            shift = clean_key[ki % len(clean_key)]
+            if decrypt:
+                shift = -shift
+            out.append(chr((ord(ch) - base + shift) % 26 + base))
+            ki += 1
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def encrypt(plaintext: str, key: str) -> str:
+    return _transform(plaintext, key, decrypt=False)
+
+
+def decrypt(ciphertext: str, key: str) -> str:
+    return _transform(ciphertext, key, decrypt=True)
+
+
+def self_check() -> None:
+    ct = encrypt("ATTACKATDAWN", "LEMON")
+    assert ct == "LXFOPVEFRNHR"
+    assert decrypt(ct, "LEMON") == "ATTACKATDAWN"
+    mixed = encrypt("Hello, World!", "Key")
+    assert decrypt(mixed, "Key") == "Hello, World!"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "reservoir_sampling",
+        "Reservoir Stream Sampler",
+        '''#!/usr/bin/env python3
+"""Vitter Algorithm R Reservoir Sampling for uniform random k-samples over streams."""
+from __future__ import annotations
+import random
+from typing import Iterable, TypeVar
+
+T = TypeVar("T")
+
+
+def reservoir_sample(stream: Iterable[T], k: int, rng: random.Random | None = None) -> list[T]:
+    if k < 0:
+        raise ValueError("Sample size k must be non-negative")
+    if k == 0:
+        return []
+    r = rng or random.Random()
+    reservoir: list[T] = []
+    for i, item in enumerate(stream):
+        if i < k:
+            reservoir.append(item)
+        else:
+            j = r.randint(0, i)
+            if j < k:
+                reservoir[j] = item
+    return reservoir
+
+
+def self_check() -> None:
+    rng = random.Random(42)
+    sample = reservoir_sample(range(1000), 10, rng=rng)
+    assert len(sample) == 10
+    assert len(set(sample)) == 10
+    assert all(0 <= x < 1000 for x in sample)
+    assert reservoir_sample([1, 2, 3], 5, rng=rng) == [1, 2, 3]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rope_string",
+        "Rope String Data Structure",
+        '''#!/usr/bin/env python3
+"""Binary tree Rope data structure for fast string concatenation and indexing."""
+from __future__ import annotations
+
+
+class RopeNode:
+    def __init__(self, text: str = "", left: RopeNode | None = None, right: RopeNode | None = None):
+        self.text = text
+        self.left = left
+        self.right = right
+        if left is None and right is None:
+            self.weight = len(text)
+        else:
+            self.weight = _total_len(left)
+
+    def __len__(self) -> int:
+        return _total_len(self)
+
+
+def _total_len(node: RopeNode | None) -> int:
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return len(node.text)
+    return node.weight + _total_len(node.right)
+
+
+def concat(left: RopeNode, right: RopeNode) -> RopeNode:
+    return RopeNode("", left=left, right=right)
+
+
+def char_at(node: RopeNode, index: int) -> str:
+    if index < 0 or index >= len(node):
+        raise IndexError("Rope index out of range")
+    curr: RopeNode | None = node
+    while curr is not None:
+        if curr.left is None and curr.right is None:
+            return curr.text[index]
+        if index < curr.weight:
+            curr = curr.left
+        else:
+            index -= curr.weight
+            curr = curr.right
+    raise IndexError("Rope index out of range")
+
+
+def to_string(node: RopeNode | None) -> str:
+    if node is None:
+        return ""
+    if node.left is None and node.right is None:
+        return node.text
+    return to_string(node.left) + to_string(node.right)
+
+
+def self_check() -> None:
+    r1 = RopeNode("Hello, ")
+    r2 = RopeNode("Python ")
+    r3 = RopeNode("Rope!")
+    full = concat(concat(r1, r2), r3)
+    assert len(full) == 19
+    assert to_string(full) == "Hello, Python Rope!"
+    assert char_at(full, 0) == "H"
+    assert char_at(full, 7) == "P"
+    assert char_at(full, 18) == "!"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "bellman_ford",
+        "Bellman-Ford Shortest Path",
+        '''#!/usr/bin/env python3
+"""Bellman-Ford single-source shortest paths with negative cycle detection."""
+from __future__ import annotations
+
+Edge = tuple[str, str, float]
+
+
+def bellman_ford(vertices: list[str], edges: list[Edge], source: str) -> dict[str, float]:
+    dist: dict[str, float] = {v: float("inf") for v in vertices}
+    dist[source] = 0.0
+
+    for _ in range(len(vertices) - 1):
+        updated = False
+        for u, v, w in edges:
+            if dist[u] != float("inf") and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                updated = True
+        if not updated:
+            break
+
+    for u, v, w in edges:
+        if dist[u] != float("inf") and dist[u] + w < dist[v]:
+            raise ValueError("Graph contains a negative-weight cycle")
+
+    return dist
+
+
+def self_check() -> None:
+    verts = ["A", "B", "C", "D"]
+    edges: list[Edge] = [
+        ("A", "B", 4),
+        ("A", "C", 5),
+        ("B", "C", -3),
+        ("C", "D", 2),
+    ]
+    d = bellman_ford(verts, edges, "A")
+    assert d == {"A": 0.0, "B": 4.0, "C": 1.0, "D": 3.0}
+
+    neg_edges: list[Edge] = [("A", "B", 1), ("B", "C", -2), ("C", "A", -1)]
+    try:
+        bellman_ford(["A", "B", "C"], neg_edges, "A")
+        assert False, "Should detect negative cycle"
+    except ValueError:
+        pass
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "b_tree",
+        "Balanced B-Tree Engine",
+        '''#!/usr/bin/env python3
+"""Order-t B-Tree supporting search and balanced node-splitting insertion."""
+from __future__ import annotations
+
+
+class BTreeNode:
+    def __init__(self, leaf: bool = False):
+        self.leaf = leaf
+        self.keys: list[int] = []
+        self.children: list[BTreeNode] = []
+
+
+class BTree:
+    def __init__(self, t: int = 2):
+        self.t = t
+        self.root = BTreeNode(leaf=True)
+
+    def search(self, k: int, node: BTreeNode | None = None) -> bool:
+        curr = self.root if node is None else node
+        i = 0
+        while i < len(curr.keys) and k > curr.keys[i]:
+            i += 1
+        if i < len(curr.keys) and k == curr.keys[i]:
+            return True
+        if curr.leaf:
+            return False
+        return self.search(k, curr.children[i])
+
+    def insert(self, k: int) -> None:
+        r = self.root
+        if len(r.keys) == 2 * self.t - 1:
+            s = BTreeNode(leaf=False)
+            self.root = s
+            s.children.append(r)
+            self._split_child(s, 0)
+            self._insert_non_full(s, k)
+        else:
+            self._insert_non_full(r, k)
+
+    def _split_child(self, parent: BTreeNode, i: int) -> None:
+        t = self.t
+        y = parent.children[i]
+        z = BTreeNode(leaf=y.leaf)
+        parent.children.insert(i + 1, z)
+        parent.keys.insert(i, y.keys[t - 1])
+        z.keys = y.keys[t:]
+        y.keys = y.keys[:t - 1]
+        if not y.leaf:
+            z.children = y.children[t:]
+            y.children = y.children[:t]
+
+    def _insert_non_full(self, x: BTreeNode, k: int) -> None:
+        i = len(x.keys) - 1
+        if x.leaf:
+            x.keys.append(0)
+            while i >= 0 and k < x.keys[i]:
+                x.keys[i + 1] = x.keys[i]
+                i -= 1
+            x.keys[i + 1] = k
+        else:
+            while i >= 0 and k < x.keys[i]:
+                i -= 1
+            i += 1
+            if len(x.children[i].keys) == 2 * self.t - 1:
+                self._split_child(x, i)
+                if k > x.keys[i]:
+                    i += 1
+            self._insert_non_full(x.children[i], k)
+
+
+def self_check() -> None:
+    bt = BTree(t=2)
+    for val in [10, 20, 5, 6, 12, 30, 7, 17]:
+        bt.insert(val)
+    for val in [10, 20, 5, 6, 12, 30, 7, 17]:
+        assert bt.search(val)
+    assert not bt.search(99)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "hamming_code",
+        "Hamming(7,4) Error Corrector",
+        '''#!/usr/bin/env python3
+"""Hamming(7,4) single-bit error-correcting encoder and decoder."""
+from __future__ import annotations
+
+
+def encode_nibble(bits: list[int]) -> list[int]:
+    if len(bits) != 4 or any(b not in (0, 1) for b in bits):
+        raise ValueError("Input must be 4 bits (0 or 1)")
+    d1, d2, d3, d4 = bits
+    p1 = d1 ^ d2 ^ d4
+    p2 = d1 ^ d3 ^ d4
+    p3 = d2 ^ d3 ^ d4
+    return [p1, p2, d1, p3, d2, d3, d4]
+
+
+def decode_block(block: list[int]) -> tuple[list[int], int]:
+    """Decode 7-bit Hamming block, correcting any 1-bit error. Returns (data_bits, error_pos_1idx)."""
+    if len(block) != 7 or any(b not in (0, 1) for b in block):
+        raise ValueError("Block must be 7 bits (0 or 1)")
+    b = block.copy()
+    s1 = b[0] ^ b[2] ^ b[4] ^ b[6]
+    s2 = b[1] ^ b[2] ^ b[5] ^ b[6]
+    s3 = b[3] ^ b[4] ^ b[5] ^ b[6]
+    err_pos = s1 + (s2 << 1) + (s3 << 2)
+    if err_pos != 0:
+        b[err_pos - 1] ^= 1
+    return [b[2], b[4], b[5], b[6]], err_pos
+
+
+def self_check() -> None:
+    data = [1, 0, 1, 1]
+    encoded = encode_nibble(data)
+    decoded, err = decode_block(encoded)
+    assert decoded == data and err == 0
+    for flip_idx in range(7):
+        corrupted = encoded.copy()
+        corrupted[flip_idx] ^= 1
+        fixed, err_pos = decode_block(corrupted)
+        assert fixed == data
+        assert err_pos == flip_idx + 1
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "manacher_palindrome",
+        "Manacher Palindrome Finder",
+        '''#!/usr/bin/env python3
+"""Manacher's O(n) algorithm to find the longest palindromic substring."""
+from __future__ import annotations
+
+
+def longest_palindrome(s: str) -> str:
+    if not s:
+        return ""
+    t = "^#" + "#".join(s) + "#$"
+    p = [0] * len(t)
+    center = right = 0
+    for i in range(1, len(t) - 1):
+        mirror = 2 * center - i
+        if i < right:
+            p[i] = min(right - i, p[mirror])
+        while t[i + p[i] + 1] == t[i - p[i] - 1]:
+            p[i] += 1
+        if i + p[i] > right:
+            center = i
+            right = i + p[i]
+
+    max_len = max(p)
+    max_center = p.index(max_len)
+    start = (max_center - max_len) // 2
+    return s[start : start + max_len]
+
+
+def self_check() -> None:
+    assert longest_palindrome("babad") in ("bab", "aba")
+    assert longest_palindrome("cbbd") == "bb"
+    assert longest_palindrome("racecar") == "racecar"
+    assert longest_palindrome("") == ""
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)

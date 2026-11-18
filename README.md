@@ -100,6 +100,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 92 | Randomized Treap BST | [`day92_treap/treap.py`](day92_treap/treap.py) | ✅ Completed |
 | Day 93 | Python Algorithm Challenge #93 | [`day93_challenge_93/challenge_93.py`](day93_challenge_93/challenge_93.py) | ✅ Completed |
 | Day 94 | Python Algorithm Challenge #94 | [`day94_challenge_94/challenge_94.py`](day94_challenge_94/challenge_94.py) | ✅ Completed |
+| Day 95 | KMP Substring Search | [`day95_kmp_search/kmp_search.py`](day95_kmp_search/kmp_search.py) | ✅ Completed |
 
 ## Upcoming Queue
 
