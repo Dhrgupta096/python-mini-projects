@@ -110,6 +110,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 102 | Balanced B-Tree Engine | [`day102_b_tree/b_tree.py`](day102_b_tree/b_tree.py) | ✅ Completed |
 | Day 103 | Hamming(7,4) Error Corrector | [`day103_hamming_code/hamming_code.py`](day103_hamming_code/hamming_code.py) | ✅ Completed |
 | Day 104 | Manacher Palindrome Finder | [`day104_manacher_palindrome/manacher_palindrome.py`](day104_manacher_palindrome/manacher_palindrome.py) | ✅ Completed |
+| Day 105 | Python Algorithm Challenge #105 | [`day105_challenge_105/challenge_105.py`](day105_challenge_105/challenge_105.py) | ✅ Completed |
 
 ## Upcoming Queue
 
