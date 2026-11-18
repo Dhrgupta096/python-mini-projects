@@ -106,6 +106,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 98 | Vigenere Cipher Engine | [`day98_vigenere_cipher/vigenere_cipher.py`](day98_vigenere_cipher/vigenere_cipher.py) | ✅ Completed |
 | Day 99 | Reservoir Stream Sampler | [`day99_reservoir_sampling/reservoir_sampling.py`](day99_reservoir_sampling/reservoir_sampling.py) | ✅ Completed |
 | Day 100 | Rope String Data Structure | [`day100_rope_string/rope_string.py`](day100_rope_string/rope_string.py) | ✅ Completed |
+| Day 101 | Bellman-Ford Shortest Path | [`day101_bellman_ford/bellman_ford.py`](day101_bellman_ford/bellman_ford.py) | ✅ Completed |
 
 ## Upcoming Queue
 
