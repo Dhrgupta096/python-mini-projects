@@ -119,6 +119,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 111 | Rabin-Karp Rolling Hash Search | [`day111_rabin_karp/rabin_karp.py`](day111_rabin_karp/rabin_karp.py) | ✅ Completed |
 | Day 112 | Tarjan Strongly Connected Components | [`day112_tarjan_scc/tarjan_scc.py`](day112_tarjan_scc/tarjan_scc.py) | ✅ Completed |
 | Day 113 | Aho-Corasick Multi-Pattern Search | [`day113_aho_corasick/aho_corasick.py`](day113_aho_corasick/aho_corasick.py) | ✅ Completed |
+| Day 114 | Cuckoo Hash Table | [`day114_cuckoo_hash/cuckoo_hash.py`](day114_cuckoo_hash/cuckoo_hash.py) | ✅ Completed |
 
 ## Upcoming Queue
 
