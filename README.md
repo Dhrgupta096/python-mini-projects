@@ -116,6 +116,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 108 | O(1) LFU Cache | [`day108_lfu_cache/lfu_cache.py`](day108_lfu_cache/lfu_cache.py) | ✅ Completed |
 | Day 109 | Floyd-Warshall All-Pairs Path | [`day109_floyd_warshall/floyd_warshall.py`](day109_floyd_warshall/floyd_warshall.py) | ✅ Completed |
 | Day 110 | Run-Length Encoding Codec | [`day110_rle_codec/rle_codec.py`](day110_rle_codec/rle_codec.py) | ✅ Completed |
+| Day 111 | Rabin-Karp Rolling Hash Search | [`day111_rabin_karp/rabin_karp.py`](day111_rabin_karp/rabin_karp.py) | ✅ Completed |
 
 ## Upcoming Queue
 
