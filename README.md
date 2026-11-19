@@ -114,6 +114,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 106 | Suffix Array & LCP Builder | [`day106_suffix_array/suffix_array.py`](day106_suffix_array/suffix_array.py) | ✅ Completed |
 | Day 107 | Dijkstra Shortest Path | [`day107_dijkstra_path/dijkstra_path.py`](day107_dijkstra_path/dijkstra_path.py) | ✅ Completed |
 | Day 108 | O(1) LFU Cache | [`day108_lfu_cache/lfu_cache.py`](day108_lfu_cache/lfu_cache.py) | ✅ Completed |
+| Day 109 | Floyd-Warshall All-Pairs Path | [`day109_floyd_warshall/floyd_warshall.py`](day109_floyd_warshall/floyd_warshall.py) | ✅ Completed |
 
 ## Upcoming Queue
 
