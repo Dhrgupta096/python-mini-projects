@@ -115,6 +115,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 107 | Dijkstra Shortest Path | [`day107_dijkstra_path/dijkstra_path.py`](day107_dijkstra_path/dijkstra_path.py) | ✅ Completed |
 | Day 108 | O(1) LFU Cache | [`day108_lfu_cache/lfu_cache.py`](day108_lfu_cache/lfu_cache.py) | ✅ Completed |
 | Day 109 | Floyd-Warshall All-Pairs Path | [`day109_floyd_warshall/floyd_warshall.py`](day109_floyd_warshall/floyd_warshall.py) | ✅ Completed |
+| Day 110 | Run-Length Encoding Codec | [`day110_rle_codec/rle_codec.py`](day110_rle_codec/rle_codec.py) | ✅ Completed |
 
 ## Upcoming Queue
 
