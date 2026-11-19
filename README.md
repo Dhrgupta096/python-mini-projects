@@ -121,6 +121,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 113 | Aho-Corasick Multi-Pattern Search | [`day113_aho_corasick/aho_corasick.py`](day113_aho_corasick/aho_corasick.py) | ✅ Completed |
 | Day 114 | Cuckoo Hash Table | [`day114_cuckoo_hash/cuckoo_hash.py`](day114_cuckoo_hash/cuckoo_hash.py) | ✅ Completed |
 | Day 115 | Kruskal Minimum Spanning Tree | [`day115_kruskal_mst/kruskal_mst.py`](day115_kruskal_mst/kruskal_mst.py) | ✅ Completed |
+| Day 116 | Python Algorithm Challenge #116 | [`day116_challenge_116/challenge_116.py`](day116_challenge_116/challenge_116.py) | ✅ Completed |
 
 ## Upcoming Queue
 
