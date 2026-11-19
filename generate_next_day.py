@@ -4788,6 +4788,573 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_105",
+        "Python Algorithm Challenge #105",
+        '''#!/usr/bin/env python3
+"""Day 105: Python Algorithm Challenge #105 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 105)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "suffix_array",
+        "Suffix Array & LCP Builder",
+        '''#!/usr/bin/env python3
+"""Suffix Array and Kasai's O(n) LCP array builder for string analysis."""
+from __future__ import annotations
+
+
+def build_suffix_array(text: str) -> list[int]:
+    return sorted(range(len(text)), key=lambda i: text[i:])
+
+
+def build_lcp(text: str, sa: list[int]) -> list[int]:
+    n = len(text)
+    if n == 0:
+        return []
+    rank = [0] * n
+    for i, pos in enumerate(sa):
+        rank[pos] = i
+    lcp = [0] * n
+    h = 0
+    for i in range(n):
+        r = rank[i]
+        if r > 0:
+            j = sa[r - 1]
+            while i + h < n and j + h < n and text[i + h] == text[j + h]:
+                h += 1
+            lcp[r] = h
+            if h > 0:
+                h -= 1
+    return lcp
+
+
+def self_check() -> None:
+    sa = build_suffix_array("banana")
+    assert sa == [5, 3, 1, 0, 4, 2]
+    assert build_lcp("banana", sa) == [0, 1, 3, 0, 0, 2]
+    assert build_lcp("", []) == []
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "dijkstra_path",
+        "Dijkstra Shortest Path",
+        '''#!/usr/bin/env python3
+"""Min-heap Dijkstra shortest path solver with path reconstruction."""
+from __future__ import annotations
+import heapq
+
+
+def dijkstra(
+    graph: dict[str, list[tuple[str, float]]], start: str, goal: str
+) -> tuple[float, list[str]]:
+    dist: dict[str, float] = {start: 0.0}
+    prev: dict[str, str | None] = {start: None}
+    pq: list[tuple[float, str]] = [(0.0, start)]
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist.get(u, float("inf")):
+            continue
+        if u == goal:
+            break
+        for v, w in graph.get(u, []):
+            nd = d + w
+            if nd < dist.get(v, float("inf")):
+                dist[v] = nd
+                prev[v] = u
+                heapq.heappush(pq, (nd, v))
+    if goal not in dist:
+        return float("inf"), []
+    path: list[str] = []
+    curr: str | None = goal
+    while curr is not None:
+        path.append(curr)
+        curr = prev[curr]
+    return dist[goal], path[::-1]
+
+
+def self_check() -> None:
+    graph = {
+        "A": [("B", 2), ("C", 5)],
+        "B": [("C", 1), ("D", 4)],
+        "C": [("D", 1)],
+        "D": [],
+    }
+    assert dijkstra(graph, "A", "D") == (4.0, ["A", "B", "C", "D"])
+    assert dijkstra(graph, "D", "A") == (float("inf"), [])
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "lfu_cache",
+        "O(1) LFU Cache",
+        '''#!/usr/bin/env python3
+"""O(1) Least Frequently Used (LFU) cache with LRU tie-breaking."""
+from __future__ import annotations
+from collections import OrderedDict, defaultdict
+
+
+class LFUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.key_val: dict[int, int] = {}
+        self.key_freq: dict[int, int] = {}
+        self.freq_keys: dict[int, OrderedDict[int, None]] = defaultdict(OrderedDict)
+        self.min_freq = 0
+
+    def _touch(self, key: int) -> None:
+        f = self.key_freq[key]
+        del self.freq_keys[f][key]
+        if not self.freq_keys[f] and f == self.min_freq:
+            self.min_freq += 1
+        self.key_freq[key] = f + 1
+        self.freq_keys[f + 1][key] = None
+
+    def get(self, key: int) -> int:
+        if key not in self.key_val:
+            return -1
+        self._touch(key)
+        return self.key_val[key]
+
+    def put(self, key: int, value: int) -> None:
+        if self.capacity <= 0:
+            return
+        if key in self.key_val:
+            self.key_val[key] = value
+            self._touch(key)
+            return
+        if len(self.key_val) >= self.capacity:
+            evict_key, _ = self.freq_keys[self.min_freq].popitem(last=False)
+            del self.key_val[evict_key]
+            del self.key_freq[evict_key]
+        self.key_val[key] = value
+        self.key_freq[key] = 1
+        self.freq_keys[1][key] = None
+        self.min_freq = 1
+
+
+def self_check() -> None:
+    cache = LFUCache(2)
+    cache.put(1, 10)
+    cache.put(2, 20)
+    assert cache.get(1) == 10
+    cache.put(3, 30)
+    assert cache.get(2) == -1
+    assert cache.get(3) == 30
+    assert cache.get(1) == 10
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "floyd_warshall",
+        "Floyd-Warshall All-Pairs Path",
+        '''#!/usr/bin/env python3
+"""Floyd-Warshall dynamic programming algorithm for all-pairs shortest paths."""
+from __future__ import annotations
+
+
+def floyd_warshall(n: int, edges: list[tuple[int, int, float]]) -> list[list[float]]:
+    inf = float("inf")
+    dist = [[0.0 if i == j else inf for j in range(n)] for i in range(n)]
+    for u, v, w in edges:
+        if w < dist[u][v]:
+            dist[u][v] = float(w)
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if dist[i][k] + dist[k][j] < dist[i][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+    return dist
+
+
+def self_check() -> None:
+    edges = [(0, 1, 3), (0, 3, 7), (1, 0, 8), (1, 2, 2), (2, 0, 5), (2, 3, 1), (3, 0, 2)]
+    dist = floyd_warshall(4, edges)
+    assert dist[0] == [0.0, 3.0, 5.0, 6.0]
+    assert dist[3][2] == 7.0
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rle_codec",
+        "Run-Length Encoding Codec",
+        '''#!/usr/bin/env python3
+"""Byte-oriented Run-Length Encoding (RLE) compressor and decompressor."""
+from __future__ import annotations
+
+
+def rle_encode(data: bytes) -> bytes:
+    out = bytearray()
+    i = 0
+    n = len(data)
+    while i < n:
+        b = data[i]
+        run = 1
+        while i + run < n and data[i + run] == b and run < 255:
+            run += 1
+        out.append(run)
+        out.append(b)
+        i += run
+    return bytes(out)
+
+
+def rle_decode(encoded: bytes) -> bytes:
+    if len(encoded) % 2 != 0:
+        raise ValueError("Invalid RLE stream length")
+    out = bytearray()
+    for i in range(0, len(encoded), 2):
+        out.extend(bytes([encoded[i + 1]]) * encoded[i])
+    return bytes(out)
+
+
+def self_check() -> None:
+    sample = b"AAAAABBBCCDAA" + b"X" * 300
+    enc = rle_encode(sample)
+    assert len(enc) < len(sample)
+    assert rle_decode(enc) == sample
+    assert rle_decode(rle_encode(b"")) == b""
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rabin_karp",
+        "Rabin-Karp Rolling Hash Search",
+        '''#!/usr/bin/env python3
+"""Rabin-Karp rolling polynomial hash substring search."""
+from __future__ import annotations
+
+
+def rabin_karp(pattern: str, text: str) -> list[int]:
+    m, n = len(pattern), len(text)
+    if m == 0 or n < m:
+        return []
+    base, mod = 256, 1_000_000_007
+    high = pow(base, m - 1, mod)
+    p_hash = t_hash = 0
+    for i in range(m):
+        p_hash = (p_hash * base + ord(pattern[i])) % mod
+        t_hash = (t_hash * base + ord(text[i])) % mod
+    matches: list[int] = []
+    for i in range(n - m + 1):
+        if p_hash == t_hash and text[i : i + m] == pattern:
+            matches.append(i)
+        if i < n - m:
+            t_hash = ((t_hash - ord(text[i]) * high) * base + ord(text[i + m])) % mod
+    return matches
+
+
+def self_check() -> None:
+    assert rabin_karp("ana", "banana") == [1, 3]
+    assert rabin_karp("xyz", "banana") == []
+    assert rabin_karp("aa", "aaaa") == [0, 1, 2]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "tarjan_scc",
+        "Tarjan Strongly Connected Components",
+        '''#!/usr/bin/env python3
+"""Tarjan's O(V+E) algorithm for finding Strongly Connected Components (SCCs)."""
+from __future__ import annotations
+
+
+def tarjan_scc(graph: dict[str, list[str]]) -> list[list[str]]:
+    index = 0
+    indices: dict[str, int] = {}
+    lowlink: dict[str, int] = {}
+    stack: list[str] = []
+    on_stack: set[str] = set()
+    sccs: list[list[str]] = []
+
+    def strongconnect(v: str) -> None:
+        nonlocal index
+        indices[v] = lowlink[v] = index
+        index += 1
+        stack.append(v)
+        on_stack.add(v)
+        for w in graph.get(v, []):
+            if w not in indices:
+                strongconnect(w)
+                lowlink[v] = min(lowlink[v], lowlink[w])
+            elif w in on_stack:
+                lowlink[v] = min(lowlink[v], indices[w])
+        if lowlink[v] == indices[v]:
+            comp: list[str] = []
+            while True:
+                w = stack.pop()
+                on_stack.remove(w)
+                comp.append(w)
+                if w == v:
+                    break
+            sccs.append(sorted(comp))
+
+    for node in sorted(graph):
+        if node not in indices:
+            strongconnect(node)
+    return sorted(sccs)
+
+
+def self_check() -> None:
+    dg = {"A": ["B"], "B": ["C", "E"], "C": ["A"], "D": ["C"], "E": ["F"], "F": ["E"]}
+    assert tarjan_scc(dg) == [["A", "B", "C"], ["D"], ["E", "F"]]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "aho_corasick",
+        "Aho-Corasick Multi-Pattern Search",
+        '''#!/usr/bin/env python3
+"""Aho-Corasick trie automaton for linear-time multi-pattern string matching."""
+from __future__ import annotations
+from collections import deque
+
+
+class AhoCorasick:
+    def __init__(self, patterns: list[str]):
+        self.goto: list[dict[str, int]] = [{}]
+        self.fail: list[int] = [0]
+        self.out: list[list[str]] = [[]]
+        for pat in patterns:
+            if not pat:
+                continue
+            state = 0
+            for ch in pat:
+                if ch not in self.goto[state]:
+                    self.goto[state][ch] = len(self.goto)
+                    self.goto.append({})
+                    self.fail.append(0)
+                    self.out.append([])
+                state = self.goto[state][ch]
+            self.out[state].append(pat)
+        q: deque[int] = deque(self.goto[0].values())
+        while q:
+            r = q.popleft()
+            for ch, s in self.goto[r].items():
+                q.append(s)
+                f = self.fail[r]
+                while f and ch not in self.goto[f]:
+                    f = self.fail[f]
+                self.fail[s] = self.goto[f].get(ch, 0)
+                self.out[s].extend(self.out[self.fail[s]])
+
+    def search(self, text: str) -> list[tuple[int, str]]:
+        state = 0
+        hits: list[tuple[int, str]] = []
+        for idx, ch in enumerate(text):
+            while state and ch not in self.goto[state]:
+                state = self.fail[state]
+            state = self.goto[state].get(ch, 0)
+            for pat in self.out[state]:
+                hits.append((idx - len(pat) + 1, pat))
+        return hits
+
+
+def self_check() -> None:
+    ac = AhoCorasick(["he", "she", "his", "hers"])
+    assert ac.search("ushers") == [(1, "she"), (2, "he"), (2, "hers")]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "cuckoo_hash",
+        "Cuckoo Hash Table",
+        '''#!/usr/bin/env python3
+"""Cuckoo Hash Table with O(1) worst-case lookup and automatic rehashing."""
+from __future__ import annotations
+import hashlib
+
+
+class CuckooHashTable:
+    def __init__(self, capacity: int = 16):
+        self.capacity = capacity
+        self.t1: list[tuple[str, int] | None] = [None] * capacity
+        self.t2: list[tuple[str, int] | None] = [None] * capacity
+        self.seed = 0
+
+    def _h1(self, key: str) -> int:
+        return int(hashlib.md5(f"1:{self.seed}:{key}".encode()).hexdigest(), 16) % self.capacity
+
+    def _h2(self, key: str) -> int:
+        return int(hashlib.sha256(f"2:{self.seed}:{key}".encode()).hexdigest(), 16) % self.capacity
+
+    def get(self, key: str) -> int | None:
+        i1 = self._h1(key)
+        if self.t1[i1] and self.t1[i1][0] == key:
+            return self.t1[i1][1]
+        i2 = self._h2(key)
+        if self.t2[i2] and self.t2[i2][0] == key:
+            return self.t2[i2][1]
+        return None
+
+    def delete(self, key: str) -> bool:
+        i1 = self._h1(key)
+        if self.t1[i1] and self.t1[i1][0] == key:
+            self.t1[i1] = None
+            return True
+        i2 = self._h2(key)
+        if self.t2[i2] and self.t2[i2][0] == key:
+            self.t2[i2] = None
+            return True
+        return False
+
+    def _rehash(self, pending: tuple[str, int]) -> None:
+        items = [x for x in self.t1 if x] + [x for x in self.t2 if x] + [pending]
+        self.capacity *= 2
+        self.seed += 1
+        self.t1 = [None] * self.capacity
+        self.t2 = [None] * self.capacity
+        for k, v in items:
+            self.put(k, v)
+
+    def put(self, key: str, value: int) -> None:
+        i1 = self._h1(key)
+        if self.t1[i1] and self.t1[i1][0] == key:
+            self.t1[i1] = (key, value)
+            return
+        i2 = self._h2(key)
+        if self.t2[i2] and self.t2[i2][0] == key:
+            self.t2[i2] = (key, value)
+            return
+        item: tuple[str, int] = (key, value)
+        for _ in range(self.capacity):
+            idx = self._h1(item[0])
+            if self.t1[idx] is None:
+                self.t1[idx] = item
+                return
+            item, self.t1[idx] = self.t1[idx], item
+            idx2 = self._h2(item[0])
+            if self.t2[idx2] is None:
+                self.t2[idx2] = item
+                return
+            item, self.t2[idx2] = self.t2[idx2], item
+        self._rehash(item)
+
+
+def self_check() -> None:
+    ch = CuckooHashTable(4)
+    for i in range(20):
+        ch.put(f"k{i}", i * 10)
+    for i in range(20):
+        assert ch.get(f"k{i}") == i * 10
+    ch.put("k5", 999)
+    assert ch.get("k5") == 999
+    assert ch.delete("k5")
+    assert ch.get("k5") is None
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "kruskal_mst",
+        "Kruskal Minimum Spanning Tree",
+        '''#!/usr/bin/env python3
+"""Kruskal's greedy Minimum Spanning Tree (MST) using Union-Find."""
+from __future__ import annotations
+
+
+def kruskal_mst(
+    vertices: list[str], edges: list[tuple[str, str, float]]
+) -> tuple[float, list[tuple[str, str, float]]]:
+    parent = {v: v for v in vertices}
+    rank = {v: 0 for v in vertices}
+
+    def find(x: str) -> str:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: str, b: str) -> bool:
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return False
+        if rank[ra] < rank[rb]:
+            ra, rb = rb, ra
+        parent[rb] = ra
+        if rank[ra] == rank[rb]:
+            rank[ra] += 1
+        return True
+
+    mst: list[tuple[str, str, float]] = []
+    total = 0.0
+    for u, v, w in sorted(edges, key=lambda e: e[2]):
+        if union(u, v):
+            mst.append((u, v, w))
+            total += w
+    return total, mst
+
+
+def self_check() -> None:
+    cost, tree = kruskal_mst(
+        ["A", "B", "C", "D"],
+        [("A", "B", 1), ("B", "C", 2), ("A", "C", 3), ("C", "D", 4), ("B", "D", 5)],
+    )
+    assert cost == 7.0
+    assert len(tree) == 3
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)
