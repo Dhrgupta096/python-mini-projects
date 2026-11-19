@@ -118,6 +118,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 110 | Run-Length Encoding Codec | [`day110_rle_codec/rle_codec.py`](day110_rle_codec/rle_codec.py) | ✅ Completed |
 | Day 111 | Rabin-Karp Rolling Hash Search | [`day111_rabin_karp/rabin_karp.py`](day111_rabin_karp/rabin_karp.py) | ✅ Completed |
 | Day 112 | Tarjan Strongly Connected Components | [`day112_tarjan_scc/tarjan_scc.py`](day112_tarjan_scc/tarjan_scc.py) | ✅ Completed |
+| Day 113 | Aho-Corasick Multi-Pattern Search | [`day113_aho_corasick/aho_corasick.py`](day113_aho_corasick/aho_corasick.py) | ✅ Completed |
 
 ## Upcoming Queue
 
