@@ -123,6 +123,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 115 | Kruskal Minimum Spanning Tree | [`day115_kruskal_mst/kruskal_mst.py`](day115_kruskal_mst/kruskal_mst.py) | ✅ Completed |
 | Day 116 | Python Algorithm Challenge #116 | [`day116_challenge_116/challenge_116.py`](day116_challenge_116/challenge_116.py) | ✅ Completed |
 | Day 117 | Gale-Shapley Stable Matching | [`day117_gale_shapley/gale_shapley.py`](day117_gale_shapley/gale_shapley.py) | ✅ Completed |
+| Day 118 | Edmonds-Karp Max Flow | [`day118_edmonds_karp/edmonds_karp.py`](day118_edmonds_karp/edmonds_karp.py) | ✅ Completed |
 
 ## Upcoming Queue
 
