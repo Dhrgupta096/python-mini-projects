@@ -129,6 +129,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 121 | Burrows-Wheeler Transform | [`day121_burrows_wheeler/burrows_wheeler.py`](day121_burrows_wheeler/burrows_wheeler.py) | ✅ Completed |
 | Day 122 | LZ77 Sliding Window Codec | [`day122_lz77_codec/lz77_codec.py`](day122_lz77_codec/lz77_codec.py) | ✅ Completed |
 | Day 123 | Self-Adjusting Splay Tree | [`day123_splay_tree/splay_tree.py`](day123_splay_tree/splay_tree.py) | ✅ Completed |
+| Day 124 | Miller-Rabin Primality Test | [`day124_miller_rabin/miller_rabin.py`](day124_miller_rabin/miller_rabin.py) | ✅ Completed |
 
 ## Upcoming Queue
 
