@@ -128,6 +128,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 120 | Z-Algorithm Pattern Search | [`day120_z_algorithm/z_algorithm.py`](day120_z_algorithm/z_algorithm.py) | ✅ Completed |
 | Day 121 | Burrows-Wheeler Transform | [`day121_burrows_wheeler/burrows_wheeler.py`](day121_burrows_wheeler/burrows_wheeler.py) | ✅ Completed |
 | Day 122 | LZ77 Sliding Window Codec | [`day122_lz77_codec/lz77_codec.py`](day122_lz77_codec/lz77_codec.py) | ✅ Completed |
+| Day 123 | Self-Adjusting Splay Tree | [`day123_splay_tree/splay_tree.py`](day123_splay_tree/splay_tree.py) | ✅ Completed |
 
 ## Upcoming Queue
 
