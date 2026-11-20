@@ -131,6 +131,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 123 | Self-Adjusting Splay Tree | [`day123_splay_tree/splay_tree.py`](day123_splay_tree/splay_tree.py) | ✅ Completed |
 | Day 124 | Miller-Rabin Primality Test | [`day124_miller_rabin/miller_rabin.py`](day124_miller_rabin/miller_rabin.py) | ✅ Completed |
 | Day 125 | RSA Keygen & Cipher | [`day125_rsa_toy/rsa_toy.py`](day125_rsa_toy/rsa_toy.py) | ✅ Completed |
+| Day 126 | Cooley-Tukey Radix-2 FFT | [`day126_fft_cooley_tukey/fft_cooley_tukey.py`](day126_fft_cooley_tukey/fft_cooley_tukey.py) | ✅ Completed |
 
 ## Upcoming Queue
 
