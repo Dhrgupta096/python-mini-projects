@@ -126,6 +126,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 118 | Edmonds-Karp Max Flow | [`day118_edmonds_karp/edmonds_karp.py`](day118_edmonds_karp/edmonds_karp.py) | ✅ Completed |
 | Day 119 | 2D Convex Hull Solver | [`day119_convex_hull/convex_hull.py`](day119_convex_hull/convex_hull.py) | ✅ Completed |
 | Day 120 | Z-Algorithm Pattern Search | [`day120_z_algorithm/z_algorithm.py`](day120_z_algorithm/z_algorithm.py) | ✅ Completed |
+| Day 121 | Burrows-Wheeler Transform | [`day121_burrows_wheeler/burrows_wheeler.py`](day121_burrows_wheeler/burrows_wheeler.py) | ✅ Completed |
 
 ## Upcoming Queue
 
