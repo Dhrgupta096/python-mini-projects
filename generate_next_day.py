@@ -5355,6 +5355,578 @@ if __name__ == "__main__":
     self_check()
 ''',
     ),
+    (
+        "challenge_116",
+        "Python Algorithm Challenge #116",
+        '''#!/usr/bin/env python3
+"""Day 116: Python Algorithm Challenge #116 — number theory & sequence utility."""
+from __future__ import annotations
+
+
+def solve_challenge(n: int) -> list[int]:
+    primes: list[int] = []
+    candidate = max(2, 116)
+    while len(primes) < n:
+        if all(candidate % d != 0 for d in range(2, int(candidate ** 0.5) + 1)):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
+
+def self_check() -> None:
+    result = solve_challenge(5)
+    assert len(result) == 5
+    assert all(result[i] < result[i + 1] for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "gale_shapley",
+        "Gale-Shapley Stable Matching",
+        '''#!/usr/bin/env python3
+"""Gale-Shapley deferred-acceptance algorithm for stable matching."""
+from __future__ import annotations
+
+
+def stable_matching(
+    proposers: dict[str, list[str]], receivers: dict[str, list[str]]
+) -> dict[str, str]:
+    rank = {r: {p: i for i, p in enumerate(prefs)} for r, prefs in receivers.items()}
+    free = list(proposers.keys())
+    next_idx = {p: 0 for p in proposers}
+    engaged_to: dict[str, str] = {}
+
+    while free:
+        p = free.pop(0)
+        r = proposers[p][next_idx[p]]
+        next_idx[p] += 1
+        if r not in engaged_to:
+            engaged_to[r] = p
+        else:
+            cur = engaged_to[r]
+            if rank[r][p] < rank[r][cur]:
+                engaged_to[r] = p
+                free.append(cur)
+            else:
+                free.append(p)
+    return {p: r for r, p in engaged_to.items()}
+
+
+def self_check() -> None:
+    matches = stable_matching(
+        {"A": ["X", "Y", "Z"], "B": ["Y", "X", "Z"], "C": ["X", "Y", "Z"]},
+        {"X": ["B", "A", "C"], "Y": ["A", "B", "C"], "Z": ["A", "B", "C"]},
+    )
+    assert matches == {"A": "X", "B": "Y", "C": "Z"}
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "edmonds_karp",
+        "Edmonds-Karp Max Flow",
+        '''#!/usr/bin/env python3
+"""Edmonds-Karp BFS-based Ford-Fulkerson maximum network flow solver."""
+from __future__ import annotations
+from collections import defaultdict, deque
+
+
+def max_flow(edges: list[tuple[str, str, int]], source: str, sink: str) -> int:
+    cap: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    adj: dict[str, set[str]] = defaultdict(set)
+    for u, v, c in edges:
+        cap[u][v] += c
+        adj[u].add(v)
+        adj[v].add(u)
+
+    total = 0
+    while True:
+        parent: dict[str, str | None] = {source: None}
+        q: deque[str] = deque([source])
+        while q and sink not in parent:
+            u = q.popleft()
+            for v in adj[u]:
+                if v not in parent and cap[u][v] > 0:
+                    parent[v] = u
+                    q.append(v)
+        if sink not in parent:
+            break
+        bottleneck = float("inf")
+        v = sink
+        while v != source:
+            u = parent[v]
+            assert u is not None
+            bottleneck = min(bottleneck, cap[u][v])
+            v = u
+        flow = int(bottleneck)
+        v = sink
+        while v != source:
+            u = parent[v]
+            assert u is not None
+            cap[u][v] -= flow
+            cap[v][u] += flow
+            v = u
+        total += flow
+    return total
+
+
+def self_check() -> None:
+    edges = [("S", "A", 10), ("S", "B", 5), ("A", "B", 15), ("A", "T", 5), ("B", "T", 10)]
+    assert max_flow(edges, "S", "T") == 15
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "convex_hull",
+        "2D Convex Hull Solver",
+        '''#!/usr/bin/env python3
+"""Andrew's monotone chain O(n log n) 2D convex hull algorithm."""
+from __future__ import annotations
+
+Point = tuple[float, float]
+
+
+def _cross(o: Point, a: Point, b: Point) -> float:
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+
+def convex_hull(points: list[Point]) -> list[Point]:
+    pts = sorted(set(points))
+    if len(pts) <= 1:
+        return pts
+    lower: list[Point] = []
+    for p in pts:
+        while len(lower) >= 2 and _cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+    upper: list[Point] = []
+    for p in reversed(pts):
+        while len(upper) >= 2 and _cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+    return lower[:-1] + upper[:-1]
+
+
+def self_check() -> None:
+    hull = convex_hull([(0, 0), (1, 1), (2, 2), (0, 2), (2, 0), (1, 0.5)])
+    assert hull == [(0, 0), (2, 0), (2, 2), (0, 2)]
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "z_algorithm",
+        "Z-Algorithm Pattern Search",
+        '''#!/usr/bin/env python3
+"""Linear-time Z-array construction and exact pattern matching."""
+from __future__ import annotations
+
+
+def compute_z(s: str) -> list[int]:
+    n = len(s)
+    z = [0] * n
+    l = r = 0
+    for i in range(1, n):
+        if i <= r:
+            z[i] = min(r - i + 1, z[i - l])
+        while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+            z[i] += 1
+        if i + z[i] - 1 > r:
+            l, r = i, i + z[i] - 1
+    return z
+
+
+def z_search(pattern: str, text: str) -> list[int]:
+    if not pattern:
+        return []
+    combined = pattern + chr(0) + text
+    z = compute_z(combined)
+    m = len(pattern)
+    return [i - m - 1 for i in range(m + 1, len(combined)) if z[i] == m]
+
+
+def self_check() -> None:
+    assert compute_z("aabxaab") == [0, 1, 0, 0, 3, 1, 0]
+    assert z_search("aba", "abacaba") == [0, 4]
+    assert z_search("zzz", "abacaba") == []
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "burrows_wheeler",
+        "Burrows-Wheeler Transform",
+        '''#!/usr/bin/env python3
+"""Burrows-Wheeler Transform (BWT) forward and inverse transform."""
+from __future__ import annotations
+
+
+def bwt_encode(text: str) -> tuple[str, int]:
+    if not text:
+        return "", 0
+    n = len(text)
+    rotations = sorted(range(n), key=lambda i: text[i:] + text[:i])
+    encoded = "".join(text[(i - 1) % n] for i in rotations)
+    primary_idx = rotations.index(0)
+    return encoded, primary_idx
+
+
+def bwt_decode(encoded: str, primary_idx: int) -> str:
+    if not encoded:
+        return ""
+    n = len(encoded)
+    order = sorted(range(n), key=lambda i: (encoded[i], i))
+    out: list[str] = []
+    idx = primary_idx
+    for _ in range(n):
+        idx = order[idx]
+        out.append(encoded[idx])
+    return "".join(out)
+
+
+def self_check() -> None:
+    enc, idx = bwt_encode("banana")
+    assert enc == "nnbaaa"
+    assert bwt_decode(enc, idx) == "banana"
+    enc2, idx2 = bwt_encode("mississippi")
+    assert bwt_decode(enc2, idx2) == "mississippi"
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "lz77_codec",
+        "LZ77 Sliding Window Codec",
+        '''#!/usr/bin/env python3
+"""LZ77 sliding-window dictionary compressor and decompressor."""
+from __future__ import annotations
+
+Token = tuple[int, int, str]
+
+
+def lz77_compress(text: str, window_size: int = 32, lookahead: int = 16) -> list[Token]:
+    tokens: list[Token] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        best_dist = 0
+        best_len = 0
+        start = max(0, i - window_size)
+        max_l = min(lookahead, n - i)
+        for j in range(start, i):
+            length = 0
+            while length < max_l and text[j + length] == text[i + length]:
+                length += 1
+            if length > best_len:
+                best_len = length
+                best_dist = i - j
+        if i + best_len < n:
+            next_char = text[i + best_len]
+            tokens.append((best_dist, best_len, next_char))
+            i += best_len + 1
+        else:
+            tokens.append((best_dist, best_len, ""))
+            i += best_len
+    return tokens
+
+
+def lz77_decompress(tokens: list[Token]) -> str:
+    out: list[str] = []
+    for dist, length, ch in tokens:
+        if length > 0:
+            start = len(out) - dist
+            for k in range(length):
+                out.append(out[start + k])
+        if ch:
+            out.append(ch)
+    return "".join(out)
+
+
+def self_check() -> None:
+    msg = "ABRACADABRA_ABRACADABRA_ABRA!"
+    toks = lz77_compress(msg)
+    assert len(toks) < len(msg)
+    assert lz77_decompress(toks) == msg
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "splay_tree",
+        "Self-Adjusting Splay Tree",
+        '''#!/usr/bin/env python3
+"""Self-adjusting Splay Binary Search Tree with amortized O(log n) operations."""
+from __future__ import annotations
+
+
+class SplayNode:
+    def __init__(self, key: int):
+        self.key = key
+        self.left: SplayNode | None = None
+        self.right: SplayNode | None = None
+
+
+class SplayTree:
+    def __init__(self):
+        self.root: SplayNode | None = None
+
+    def _rot_right(self, x: SplayNode) -> SplayNode:
+        y = x.left
+        assert y is not None
+        x.left = y.right
+        y.right = x
+        return y
+
+    def _rot_left(self, x: SplayNode) -> SplayNode:
+        y = x.right
+        assert y is not None
+        x.right = y.left
+        y.left = x
+        return y
+
+    def _splay(self, node: SplayNode | None, key: int) -> SplayNode | None:
+        if node is None or node.key == key:
+            return node
+        if key < node.key:
+            if node.left is None:
+                return node
+            if key < node.left.key:
+                node.left.left = self._splay(node.left.left, key)
+                node = self._rot_right(node)
+            elif key > node.left.key:
+                node.left.right = self._splay(node.left.right, key)
+                if node.left.right is not None:
+                    node.left = self._rot_left(node.left)
+            return node if node.left is None else self._rot_right(node)
+        else:
+            if node.right is None:
+                return node
+            if key > node.right.key:
+                node.right.right = self._splay(node.right.right, key)
+                node = self._rot_left(node)
+            elif key < node.right.key:
+                node.right.left = self._splay(node.right.left, key)
+                if node.right.left is not None:
+                    node.right = self._rot_right(node.right)
+            return node if node.right is None else self._rot_left(node)
+
+    def insert(self, key: int) -> None:
+        if self.root is None:
+            self.root = SplayNode(key)
+            return
+        self.root = self._splay(self.root, key)
+        assert self.root is not None
+        if self.root.key == key:
+            return
+        node = SplayNode(key)
+        if key < self.root.key:
+            node.right = self.root
+            node.left = self.root.left
+            self.root.left = None
+        else:
+            node.left = self.root
+            node.right = self.root.right
+            self.root.right = None
+        self.root = node
+
+    def search(self, key: int) -> bool:
+        self.root = self._splay(self.root, key)
+        return self.root is not None and self.root.key == key
+
+
+def self_check() -> None:
+    st = SplayTree()
+    for v in [10, 20, 30, 40, 50, 25]:
+        st.insert(v)
+    assert st.search(25) and st.root is not None and st.root.key == 25
+    assert st.search(10) and st.root.key == 10
+    assert not st.search(99)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "miller_rabin",
+        "Miller-Rabin Primality Test",
+        '''#!/usr/bin/env python3
+"""Deterministic 64-bit Miller-Rabin primality testing utility."""
+from __future__ import annotations
+
+
+def is_probable_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    small = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+    for p in small:
+        if n == p:
+            return True
+        if n % p == 0:
+            return False
+    d = n - 1
+    s = 0
+    while d % 2 == 0:
+        d //= 2
+        s += 1
+    for a in small:
+        if a >= n:
+            continue
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(s - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
+
+
+def self_check() -> None:
+    assert is_probable_prime(2)
+    assert is_probable_prime(1_000_000_007)
+    assert is_probable_prime(2_147_483_647)
+    assert not is_probable_prime(561)
+    assert not is_probable_prime(1_000_000_009 * 3)
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "rsa_toy",
+        "RSA Keygen & Cipher",
+        '''#!/usr/bin/env python3
+"""Textbook RSA key generation (via extended GCD), encryption, and decryption."""
+from __future__ import annotations
+
+
+def egcd(a: int, b: int) -> tuple[int, int, int]:
+    if b == 0:
+        return a, 1, 0
+    g, x1, y1 = egcd(b, a % b)
+    return g, y1, x1 - (a // b) * y1
+
+
+def generate_keys(
+    p: int, q: int, e: int = 65537
+) -> tuple[tuple[int, int], tuple[int, int]]:
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    g, x, _ = egcd(e, phi)
+    if g != 1:
+        raise ValueError("e must be coprime to phi(n)")
+    d = x % phi
+    return (e, n), (d, n)
+
+
+def rsa_encrypt(m: int, pub: tuple[int, int]) -> int:
+    e, n = pub
+    if not (0 <= m < n):
+        raise ValueError("Message integer must satisfy 0 <= m < n")
+    return pow(m, e, n)
+
+
+def rsa_decrypt(c: int, priv: tuple[int, int]) -> int:
+    d, n = priv
+    return pow(c, d, n)
+
+
+def self_check() -> None:
+    pub, priv = generate_keys(61, 53, e=17)
+    ct = rsa_encrypt(65, pub)
+    assert ct == 2790
+    assert rsa_decrypt(ct, priv) == 65
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
+    (
+        "fft_cooley_tukey",
+        "Cooley-Tukey Radix-2 FFT",
+        '''#!/usr/bin/env python3
+"""Cooley-Tukey radix-2 Fast Fourier Transform (FFT) and polynomial multiplication."""
+from __future__ import annotations
+import cmath
+
+
+def fft(a: list[complex], invert: bool = False) -> list[complex]:
+    n = len(a)
+    if n <= 1:
+        return list(a)
+    if n & (n - 1) != 0:
+        raise ValueError("Length must be a power of 2")
+    even = fft(a[0::2], invert)
+    odd = fft(a[1::2], invert)
+    ang = (2.0 * cmath.pi / n) * (1 if invert else -1)
+    w = 1 + 0j
+    wn = cmath.rect(1.0, ang)
+    out = [0j] * n
+    half = n // 2
+    for i in range(half):
+        t = w * odd[i]
+        out[i] = even[i] + t
+        out[i + half] = even[i] - t
+        w *= wn
+    if invert:
+        return [x / 2.0 for x in out]
+    return out
+
+
+def poly_multiply(p: list[int], q: list[int]) -> list[int]:
+    size = 1
+    target = len(p) + len(q) - 1
+    while size < target:
+        size <<= 1
+    fa = fft([complex(x) for x in p] + [0j] * (size - len(p)))
+    fb = fft([complex(x) for x in q] + [0j] * (size - len(q)))
+    fc = fft([fa[i] * fb[i] for i in range(size)], invert=True)
+    return [round(fc[i].real) for i in range(target)]
+
+
+def self_check() -> None:
+    assert poly_multiply([1, 2, 3], [4, 5]) == [4, 13, 22, 15]
+    sig = [1 + 0j, 2 + 0j, 3 + 0j, 4 + 0j]
+    rec = fft(fft(sig), invert=True)
+    assert all(abs(rec[i] - sig[i]) < 1e-9 for i in range(4))
+    print("Self-check passed.")
+
+
+if __name__ == "__main__":
+    self_check()
+''',
+    ),
 ]
 
 PROJECTS.extend(PAST_CHALLENGES)
