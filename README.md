@@ -139,6 +139,7 @@ A daily collection of clean, standard-library Python mini-projects and classic g
 | Day 131 | Python Algorithm Challenge #131 | [`day131_challenge_131/challenge_131.py`](day131_challenge_131/challenge_131.py) | ✅ Completed |
 | Day 132 | Python Algorithm Challenge #132 | [`day132_challenge_132/challenge_132.py`](day132_challenge_132/challenge_132.py) | ✅ Completed |
 | Day 133 | Python Algorithm Challenge #133 | [`day133_challenge_133/challenge_133.py`](day133_challenge_133/challenge_133.py) | ✅ Completed |
+| Day 134 | Python Algorithm Challenge #134 | [`day134_challenge_134/challenge_134.py`](day134_challenge_134/challenge_134.py) | ✅ Completed |
 
 ## Upcoming Queue
 
